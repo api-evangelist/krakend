@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/api-evangelist/krakend/blob/main/json-schema/service-config.json",
+  "title": "KrakenD Service Configuration",
+  "description": "The root configuration object for a KrakenD API Gateway instance, defining service-level settings, global defaults, and the collection of endpoint definitions.",
+  "type": "object",
+  "required": ["version", "endpoints"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Reference to the KrakenD JSON Schema for IDE autocompletion."
+    },
+    "version": {
+      "type": "integer",
+      "enum": [3],
+      "description": "The configuration file version. Must be 3 for KrakenD v2.x."
+    },
+    "name": {
+      "type": "string",
+      "description": "Name of the KrakenD service instance."
+    },
+    "port": {
+      "type": "integer",
+      "default": 8080,
+      "description": "Port on which the gateway listens for incoming requests."
+    },
+    "host": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Default list of backend hosts used when endpoints do not specify their own."
+    },
+    "timeout": {
+      "type": "string",
+      "description": "Default timeout for all endpoints. E.g., 3s or 3000ms."
+    },
+    "cache_ttl": {
+      "type": "string",
+      "description": "Default Cache-Control max-age for all endpoints."
+    },
+    "output_encoding": {
+      "type": "string",
+      "enum": ["json", "json-collection", "yaml", "fast-json", "xml", "negotiate", "string", "no-op"],
+      "description": "Default output encoding for all endpoints."
+    },
+    "listen_ip": {
+      "type": "string",
+      "description": "IP address the service binds to. Empty means all interfaces."
+    },
+    "debug_endpoint": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enables the /__debug/ endpoint for request inspection."
+    },
+    "echo_endpoint": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enables the /__echo/ endpoint for request echoing."
+    },
+    "sequential_start": {
+      "type": "boolean",
+      "default": false,
+      "description": "Start the gateway only after all async agents are ready."
+    },
+    "endpoints": {
+      "type": "array",
+      "items": {
+        "$ref": "endpoint.json"
+      },
+      "description": "The collection of endpoint definitions exposed by the gateway."
+    },
+    "extra_config": {
+      "type": "object",
+      "description": "Service-level component configurations keyed by namespace."
+    },
+    "tls": {
+      "$ref": "tls.json",
+      "description": "TLS/HTTPS configuration for the gateway."
+    },
+    "plugin": {
+      "$ref": "plugin.json",
+      "description": "Plugin loader configuration."
+    },
+    "async_agent": {
+      "type": "array",
+      "items": {
+        "$ref": "async-agent.json"
+      },
+      "description": "Asynchronous agent definitions for consuming from queues and event streams."
+    }
+  }
+}

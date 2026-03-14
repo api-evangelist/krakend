@@ -1,0 +1,102 @@
+{
+  "@context": {
+    "@vocab": "https://schema.org/",
+    "krakend": "https://www.krakend.io/docs/",
+    "ServiceConfig": {
+      "@id": "krakend:configuration/structure/",
+      "@context": {
+        "version": "https://schema.org/version",
+        "name": "https://schema.org/name",
+        "port": "https://schema.org/identifier",
+        "host": "https://schema.org/hostingOrganization",
+        "timeout": "https://schema.org/duration",
+        "cache_ttl": "https://schema.org/duration",
+        "output_encoding": "https://schema.org/encodingFormat",
+        "listen_ip": "https://schema.org/identifier",
+        "debug_endpoint": "https://schema.org/actionOption",
+        "echo_endpoint": "https://schema.org/actionOption",
+        "endpoints": {
+          "@id": "krakend:endpoints/",
+          "@type": "@id"
+        },
+        "tls": {
+          "@id": "krakend:service-settings/tls/",
+          "@type": "@id"
+        },
+        "plugin": {
+          "@id": "krakend:extending/",
+          "@type": "@id"
+        },
+        "extra_config": "https://schema.org/additionalProperty"
+      }
+    },
+    "Endpoint": {
+      "@id": "krakend:endpoints/",
+      "@context": {
+        "endpoint": "https://schema.org/urlTemplate",
+        "method": "https://schema.org/httpMethod",
+        "output_encoding": "https://schema.org/encodingFormat",
+        "concurrent_calls": "https://schema.org/repeatCount",
+        "timeout": "https://schema.org/duration",
+        "cache_ttl": "https://schema.org/duration",
+        "querystring_params": "https://schema.org/urlTemplate",
+        "headers_to_pass": "https://schema.org/httpMethod",
+        "backend": {
+          "@id": "krakend:backends/",
+          "@type": "@id"
+        },
+        "extra_config": "https://schema.org/additionalProperty"
+      }
+    },
+    "Backend": {
+      "@id": "krakend:backends/",
+      "@context": {
+        "host": "https://schema.org/hostingOrganization",
+        "url_pattern": "https://schema.org/urlTemplate",
+        "encoding": "https://schema.org/encodingFormat",
+        "sd": "https://schema.org/category",
+        "method": "https://schema.org/httpMethod",
+        "group": "https://schema.org/name",
+        "target": "https://schema.org/identifier",
+        "mapping": "https://schema.org/propertyID",
+        "allow": "https://schema.org/includesObject",
+        "deny": "https://schema.org/excludesObject",
+        "is_collection": "https://schema.org/actionOption",
+        "extra_config": "https://schema.org/additionalProperty"
+      }
+    },
+    "TLS": {
+      "@id": "krakend:service-settings/tls/",
+      "@context": {
+        "public_key": "https://schema.org/text",
+        "private_key": "https://schema.org/text",
+        "min_version": "https://schema.org/version",
+        "max_version": "https://schema.org/version",
+        "disabled": "https://schema.org/actionOption",
+        "enable_mtls": "https://schema.org/actionOption",
+        "ca_certs": "https://schema.org/text"
+      }
+    },
+    "Plugin": {
+      "@id": "krakend:extending/",
+      "@context": {
+        "pattern": "https://schema.org/identifier",
+        "folder": "https://schema.org/contentUrl"
+      }
+    },
+    "AsyncAgent": {
+      "@id": "krakend:async/",
+      "@context": {
+        "name": "https://schema.org/name",
+        "encoding": "https://schema.org/encodingFormat",
+        "backend": {
+          "@id": "krakend:backends/",
+          "@type": "@id"
+        },
+        "consumer": "https://schema.org/subscriber",
+        "connection": "https://schema.org/potentialAction",
+        "extra_config": "https://schema.org/additionalProperty"
+      }
+    }
+  }
+}

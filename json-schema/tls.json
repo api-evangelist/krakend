@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/api-evangelist/krakend/blob/main/json-schema/tls.json",
+  "title": "KrakenD TLS Configuration",
+  "description": "TLS configuration for enabling HTTPS on the KrakenD API Gateway, including certificate paths, minimum TLS version, and cipher suite preferences.",
+  "type": "object",
+  "required": ["public_key", "private_key"],
+  "properties": {
+    "public_key": {
+      "type": "string",
+      "description": "Path to the public key or certificate PEM file."
+    },
+    "private_key": {
+      "type": "string",
+      "description": "Path to the private key PEM file."
+    },
+    "min_version": {
+      "type": "string",
+      "enum": ["SSL3.0", "TLS10", "TLS11", "TLS12", "TLS13"],
+      "description": "Minimum TLS version accepted."
+    },
+    "max_version": {
+      "type": "string",
+      "enum": ["SSL3.0", "TLS10", "TLS11", "TLS12", "TLS13"],
+      "description": "Maximum TLS version accepted."
+    },
+    "curve_preferences": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "description": "Elliptic curve preferences for TLS handshake."
+    },
+    "prefer_server_cipher_suites": {
+      "type": "boolean",
+      "description": "Whether to prefer the server cipher suite order."
+    },
+    "cipher_suites": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "description": "List of supported cipher suite IDs."
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Disables TLS even when certificate files are present."
+    },
+    "enable_mtls": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enables mutual TLS authentication."
+    },
+    "ca_certs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Paths to CA certificate files for mTLS client verification."
+    }
+  }
+}

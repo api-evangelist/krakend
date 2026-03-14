@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/api-evangelist/krakend/blob/main/json-schema/backend.json",
+  "title": "KrakenD Backend",
+  "description": "A Backend defines a target service that a KrakenD endpoint connects to, including the host, URL pattern, encoding, and data manipulation settings.",
+  "type": "object",
+  "required": ["url_pattern"],
+  "properties": {
+    "host": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of backend host URLs. Overrides the service-level host list."
+    },
+    "url_pattern": {
+      "type": "string",
+      "description": "The URL path to request on the backend. Supports parameter placeholders."
+    },
+    "encoding": {
+      "type": "string",
+      "enum": ["json", "safejson", "xml", "rss", "string", "no-op"],
+      "description": "The encoding of the backend response."
+    },
+    "sd": {
+      "type": "string",
+      "enum": ["static", "dns"],
+      "description": "Service discovery method. Static resolves at startup, DNS resolves per request."
+    },
+    "method": {
+      "type": "string",
+      "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+      "description": "HTTP method to use when calling the backend. Defaults to the endpoint method."
+    },
+    "group": {
+      "type": "string",
+      "description": "Wraps the backend response under this key name for response merging."
+    },
+    "target": {
+      "type": "string",
+      "description": "Extracts a nested object from the backend response using this key."
+    },
+    "mapping": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Renames backend response fields. Key is original name, value is new name."
+    },
+    "allow": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Whitelist of fields to include from the backend response."
+    },
+    "deny": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Blacklist of fields to exclude from the backend response."
+    },
+    "is_collection": {
+      "type": "boolean",
+      "default": false,
+      "description": "Set to true when the backend response is an array instead of an object."
+    },
+    "extra_config": {
+      "type": "object",
+      "description": "Additional component configurations keyed by namespace."
+    }
+  }
+}

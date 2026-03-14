@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/api-evangelist/krakend/blob/main/json-schema/endpoint.json",
+  "title": "KrakenD Endpoint",
+  "description": "An Endpoint defines a public-facing URL pattern that the KrakenD gateway exposes to clients, along with its associated backends, encoding, rate limiting, and other configurations.",
+  "type": "object",
+  "required": ["endpoint", "backend"],
+  "properties": {
+    "endpoint": {
+      "type": "string",
+      "description": "The URL pattern the gateway exposes to clients. Must start with a slash."
+    },
+    "method": {
+      "type": "string",
+      "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+      "description": "The HTTP method this endpoint accepts. Create multiple endpoint entries for different methods."
+    },
+    "output_encoding": {
+      "type": "string",
+      "enum": ["json", "json-collection", "yaml", "fast-json", "xml", "negotiate", "string", "no-op"],
+      "description": "The encoding used to render the response to the client."
+    },
+    "concurrent_calls": {
+      "type": "integer",
+      "default": 1,
+      "description": "Number of concurrent calls to each backend for this endpoint."
+    },
+    "timeout": {
+      "type": "string",
+      "description": "Maximum time to wait for the endpoint to complete. E.g., 2s or 2000ms."
+    },
+    "cache_ttl": {
+      "type": "string",
+      "description": "Duration for Cache-Control max-age header. E.g., 300s or 5m."
+    },
+    "querystring_params": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Allowed query string parameters to forward to backends. Use * to forward all."
+    },
+    "headers_to_pass": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of client headers forwarded to the backend."
+    },
+    "backend": {
+      "type": "array",
+      "items": {
+        "$ref": "backend.json"
+      },
+      "description": "List of backend definitions this endpoint connects to."
+    },
+    "extra_config": {
+      "type": "object",
+      "description": "Additional component configurations keyed by namespace."
+    },
+    "input_query_strings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Recognized query string parameters that can be used in the endpoint."
+    },
+    "input_headers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Recognized headers that can be used in the endpoint."
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/api-evangelist/krakend/blob/main/json-schema/plugin.json",
+  "title": "KrakenD Plugin Configuration",
+  "description": "Plugin loader configuration for KrakenD, defining the directory and patterns for loading external Go plugins at gateway startup.",
+  "type": "object",
+  "properties": {
+    "pattern": {
+      "type": "string",
+      "description": "File pattern to match plugin shared object files. E.g., .so."
+    },
+    "folder": {
+      "type": "string",
+      "description": "Directory path where plugin .so files are located."
+    }
+  }
+}

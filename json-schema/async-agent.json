@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/api-evangelist/krakend/blob/main/json-schema/async-agent.json",
+  "title": "KrakenD Async Agent",
+  "description": "An Async Agent defines a consumer that subscribes to a queue or event stream (such as RabbitMQ, Kafka, or AWS SNS/SQS) and processes messages independently of HTTP request/response cycles.",
+  "type": "object",
+  "required": ["name", "backend", "consumer"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "A unique name for the async agent."
+    },
+    "encoding": {
+      "type": "string",
+      "description": "The encoding of the consumed messages."
+    },
+    "backend": {
+      "type": "array",
+      "items": {
+        "$ref": "backend.json"
+      },
+      "description": "Backend definitions to process the consumed messages."
+    },
+    "consumer": {
+      "type": "object",
+      "description": "Consumer configuration including topic, subscription, and connection details.",
+      "properties": {
+        "topic": {
+          "type": "string",
+          "description": "The topic or queue name to consume from."
+        },
+        "workers": {
+          "type": "integer",
+          "description": "Number of concurrent consumer workers."
+        },
+        "timeout": {
+          "type": "string",
+          "description": "Timeout for consuming a message."
+        },
+        "max_rate": {
+          "type": "number",
+          "description": "Maximum rate of messages consumed per second."
+        }
+      }
+    },
+    "connection": {
+      "type": "object",
+      "description": "Connection settings for the message broker.",
+      "properties": {
+        "max_retries": {
+          "type": "integer",
+          "description": "Maximum number of connection retry attempts."
+        },
+        "backoff_strategy": {
+          "type": "string",
+          "description": "Backoff strategy for reconnection attempts."
+        },
+        "health_interval": {
+          "type": "string",
+          "description": "Interval between health checks on the connection."
+        }
+      }
+    },
+    "extra_config": {
+      "type": "object",
+      "description": "Additional component configurations keyed by namespace."
+    }
+  }
+}
