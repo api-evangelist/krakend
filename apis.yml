@@ -61,7 +61,7 @@ common:
     type: GitHub
     description: 'null'
 created: '2025-01-08'
-modified: '2026-03-14'
+modified: '2026-03-16'
 position: Consumer
 description: >-
   KrakenD is a high-performance, stateless, distributed API Gateway designed
@@ -74,5 +74,5 @@ description: >-
   debug, and metrics endpoints for operational visibility.
 maintainers:
   - FN: Kin Lane
-    email: info@apievangelist.com
+    email: kin@apievangelist.com
 specificationVersion: '0.19'
