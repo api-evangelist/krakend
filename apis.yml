@@ -1,78 +1,45 @@
 aid: krakend
-url: >-
-  https://raw.githubusercontent.com/api-evangelist/krakend/refs/heads/main/apis.yml
-apis:
-  - aid: krakend:service-api
-    name: KrakenD Service API
-    tags:
-      - Platform
-      - Gateways
-      - Monitoring
-    humanURL: https://www.krakend.io/docs/service-settings/
-    properties:
-      - url: https://www.krakend.io/docs/service-settings/
-        type: Documentation
-      - url: openapi/krakend-service-api-openapi.yml
-        type: OpenAPI
-      - url: json-schema/service-config.json
-        type: JSONSchema
-      - url: json-schema/endpoint.json
-        type: JSONSchema
-      - url: json-schema/backend.json
-        type: JSONSchema
-      - url: json-schema/tls.json
-        type: JSONSchema
-      - url: json-schema/plugin.json
-        type: JSONSchema
-      - url: json-schema/async-agent.json
-        type: JSONSchema
-      - url: json-ld/krakend-context.jsonld
-        type: JSONLD
-    description: >-
-      The KrakenD Service API exposes built-in operational endpoints on a
-      running KrakenD API Gateway instance. The health endpoint (/__health)
-      returns gateway status and is enabled by default. The debug endpoint
-      (/__debug) echoes request details for troubleshooting when enabled.
-      The extended metrics endpoint (/__stats) provides detailed runtime
-      metrics on a separate port when telemetry is configured. The echo
-      endpoint (/__echo) returns incoming request details for testing.
 name: KrakenD
-tags:
-  - Platform
-  - Gateways
+description: >-
+  KrakenD is a stateless, distributed, high-performance open-source API
+  gateway written in Go, focused on API aggregation, transformation, and
+  security with a declarative configuration approach.
 type: Index
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
-access: 3rd-Party
+tags:
+  - API Gateway
+  - Go
+  - Open Source
+  - Aggregation
+url: >-
+  https://raw.githubusercontent.com/api-evangelist/krakend/refs/heads/main/apis.yml
+created: '2026-03-18'
+modified: '2026-03-18'
+specificationVersion: '0.19'
+apis:
+  - aid: krakend:krakend
+    name: KrakenD
+    description: >-
+      KrakenD Community Edition is an ultra-high performance API gateway that
+      aggregates multiple service calls into a single endpoint, transforming
+      and filtering responses with a declarative JSON configuration.
+    humanURL: https://www.krakend.io/
+    tags:
+      - API Gateway
+      - Go
+      - Aggregation
+    properties:
+      - type: Documentation
+        url: https://www.krakend.io/docs/overview/
+      - type: Getting Started
+        url: https://www.krakend.io/docs/overview/introduction/
 common:
-  - url: https://www.krakend.io/docs/overview/
-    name: KrakenD Community Edition Documentation
-    type: Documentation
-    description: 'null'
-  - url: https://www.krakend.io/blog/
-    name: KrakenD Blog
-    type: Blog
-    description: 'null'
-  - url: https://www.krakend.io/support/
-    name: KrakenD Support
-    type: Support
-    description: 'null'
-  - url: https://github.com/krakend/krakend-ce
-    name: KrakenD Community Edition GitHub
-    type: GitHub
-    description: 'null'
-created: '2025-01-08'
-modified: '2026-03-16'
-position: Consumer
-description: >-
-  KrakenD is a high-performance, stateless, distributed API Gateway designed
-  to help developers build scalable and resilient microservices architectures.
-  It aggregates multiple backend services into single endpoints, performing
-  response merging, data transformation, filtering, throttling,
-  authentication, and caching automatically. KrakenD uses a declarative
-  configuration file (krakend.json) to define endpoints and backends,
-  supports plugins for extensibility, and provides built-in health check,
-  debug, and metrics endpoints for operational visibility.
+  - type: Website
+    url: https://www.krakend.io/
+  - type: Documentation
+    url: https://www.krakend.io/docs/
+  - type: GitHub Organization
+    url: https://github.com/krakend/krakend-ce
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
-specificationVersion: '0.19'
