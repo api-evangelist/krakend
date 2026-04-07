@@ -25,7 +25,7 @@ paths:
   /__health:
     get:
       operationId: getHealth
-      summary: Health check
+      summary: KrakenD Health check
       description: >-
         Returns the health status of the KrakenD instance. Automatically
         available when KrakenD is running. Returns a 200 status code when
@@ -44,7 +44,7 @@ paths:
   /__debug/{path}:
     get:
       operationId: debugEndpoint
-      summary: Debug endpoint
+      summary: KrakenD Debug endpoint
       description: >-
         Acts as a fake backend that echoes request details in the server
         logs at DEBUG level. Useful for inspecting the interaction between
@@ -68,7 +68,7 @@ paths:
                 type: object
     post:
       operationId: debugEndpointPost
-      summary: Debug endpoint (POST)
+      summary: KrakenD Debug endpoint (POST)
       description: >-
         POST variant of the debug endpoint. Echoes request body and headers
         in the server logs.
@@ -96,7 +96,7 @@ paths:
   /__stats/:
     get:
       operationId: getStats
-      summary: Extended metrics
+      summary: KrakenD Extended metrics
       description: >-
         Returns extended runtime metrics for the KrakenD instance including
         router, proxy, and backend statistics. This endpoint runs on a
@@ -115,7 +115,7 @@ paths:
   /__echo/:
     get:
       operationId: echoEndpoint
-      summary: Echo endpoint
+      summary: KrakenD Echo endpoint
       description: >-
         Returns details about the incoming request, including headers and
         query parameters. Useful for testing and debugging. Must be enabled
