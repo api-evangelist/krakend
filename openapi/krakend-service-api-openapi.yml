@@ -190,3 +190,7 @@ components:
         body:
           type: string
           description: Request body if present.
+tags:
+  - name: Debug
+  - name: Health
+  - name: Metrics

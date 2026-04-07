@@ -7,10 +7,10 @@ description: >-
 type: Index
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 tags:
+  - Aggregation
   - API Gateway
   - Go
   - Open Source
-  - Aggregation
 url: >-
   https://raw.githubusercontent.com/api-evangelist/krakend/refs/heads/main/apis.yml
 created: '2026-03-18'
@@ -25,9 +25,9 @@ apis:
       and filtering responses with a declarative JSON configuration.
     humanURL: https://www.krakend.io/
     tags:
+      - Aggregation
       - API Gateway
       - Go
-      - Aggregation
     properties:
       - type: Documentation
         url: https://www.krakend.io/docs/overview/
@@ -56,8 +56,8 @@ apis:
     baseURL: http://localhost:8080
     tags:
       - Health Check
-      - Observability
       - Monitoring
+      - Observability
       - Operations
     properties:
       - type: Documentation
@@ -78,8 +78,8 @@ apis:
     tags:
       - Async
       - Event-Driven
-      - Messaging
       - Kafka
+      - Messaging
     properties:
       - type: Documentation
         url: https://www.krakend.io/docs/async/
