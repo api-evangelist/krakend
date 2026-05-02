@@ -14,7 +14,7 @@ tags:
 url: >-
   https://raw.githubusercontent.com/api-evangelist/krakend/refs/heads/main/apis.yml
 created: '2026-03-18'
-modified: '2026-03-18'
+modified: '2026-04-28'
 specificationVersion: '0.19'
 apis:
   - aid: krakend:krakend
