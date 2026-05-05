@@ -1,0 +1,138 @@
+naftiko: "1.0.0-alpha1"
+
+info:
+  label: "KrakenD Gateway Observability"
+  description: "Observability workflow for platform operators to check KrakenD gateway health, inspect debug request flow, and pull extended runtime metrics from a running gateway instance."
+  tags:
+    - KrakenD
+    - API Gateway
+    - Observability
+    - Health
+  created: "2026-05-04"
+  modified: "2026-05-04"
+
+binds:
+  - namespace: env
+    keys:
+      KRAKEND_GATEWAY_URL: KRAKEND_GATEWAY_URL
+      KRAKEND_METRICS_URL: KRAKEND_METRICS_URL
+
+capability:
+  consumes:
+    - import: krakend-service
+      location: ./shared/krakend-service.yaml
+
+  exposes:
+    - type: rest
+      port: 8080
+      namespace: krakend-observability-api
+      description: "Unified REST API for KrakenD gateway operational checks."
+      resources:
+        - path: /v1/health
+          name: health
+          description: "Gateway health."
+          operations:
+            - method: GET
+              name: get-health
+              description: "Return the KrakenD gateway health status."
+              call: "krakend-service.get-health"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/echo
+          name: echo
+          description: "Echo endpoint for request inspection."
+          operations:
+            - method: GET
+              name: get-echo
+              description: "Return request headers, query, method, and body."
+              call: "krakend-service.get-echo"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/stats
+          name: stats
+          description: "Extended runtime metrics."
+          operations:
+            - method: GET
+              name: get-stats
+              description: "Return router, proxy, backend, and Go runtime metrics."
+              call: "krakend-metrics.get-stats"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/debug
+          name: debug
+          description: "Debug echo endpoint."
+          operations:
+            - method: GET
+              name: debug-get
+              description: "GET against the KrakenD debug endpoint at a sub-path."
+              call: "krakend-service.debug-get"
+              with:
+                path: "rest.path"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+            - method: POST
+              name: debug-post
+              description: "POST against the KrakenD debug endpoint at a sub-path."
+              call: "krakend-service.debug-post"
+              with:
+                path: "rest.path"
+                payload: "rest.payload"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+
+    - type: mcp
+      port: 9090
+      namespace: krakend-observability-mcp
+      transport: http
+      description: "MCP server for AI-assisted KrakenD gateway operational checks."
+      tools:
+        - name: get-health
+          description: "Return the KrakenD gateway health status."
+          hints:
+            readOnly: true
+          call: "krakend-service.get-health"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: get-echo
+          description: "Return request details from the KrakenD echo endpoint."
+          hints:
+            readOnly: true
+          call: "krakend-service.get-echo"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: get-stats
+          description: "Return extended runtime metrics from KrakenD."
+          hints:
+            readOnly: true
+          call: "krakend-metrics.get-stats"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: debug-get
+          description: "Issue a GET against the KrakenD debug endpoint."
+          hints:
+            readOnly: true
+          call: "krakend-service.debug-get"
+          with:
+            path: "tools.path"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: debug-post
+          description: "Issue a POST against the KrakenD debug endpoint."
+          hints:
+            readOnly: false
+          call: "krakend-service.debug-post"
+          with:
+            path: "tools.path"
+            payload: "tools.payload"
+          outputParameters:
+            - type: object
+              mapping: "$."

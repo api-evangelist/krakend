@@ -3,6 +3,8 @@ KrakenD is a stateless, distributed, high-performance open-source API gateway wr
 
 **URL:** [Visit APIs.json URL](https://raw.githubusercontent.com/api-evangelist/krakend/refs/heads/main/apis.yml)
 
+**Run:** [Capabilities Using Naftiko](https://github.com/naftiko/fleet?utm_source=api-evangelist&utm_medium=readme&utm_campaign=company-api-evangelist&utm_content=repo)
+
 ## Scope
 
 - **Type:** Index 
@@ -16,7 +18,7 @@ KrakenD is a stateless, distributed, high-performance open-source API gateway wr
 ## Timestamps
 
 - **Created:** 2026-03-18 
-- **Modified:** 2026-03-18 
+- **Modified:** 2026-05-04 
 
 ## APIs
 
@@ -88,6 +90,20 @@ The KrakenD Async Agent enables event-driven API consumption by connecting Krake
 - [Developer Tools](https://designer.krakend.io/)
 - [JSONSchema](json-schema/service-config.json)
 - [JSON-LD](json-ld/krakend-context.jsonld)
+
+## Capabilities
+
+Naftiko capabilities organized as shared per-API definitions composed into customer-facing workflows.
+
+### Shared Per-API Definitions
+
+- [KrakenD Service API](capabilities/shared/krakend-service.yaml) -- 5 operations for gateway health, echo, debug, and runtime metrics
+
+### Workflow Capabilities
+
+| Workflow | APIs Combined | Tools | Persona |
+|----------|--------------|-------|---------|
+| [Gateway Observability](capabilities/gateway-observability.yaml) | KrakenD Service | 5 | Platform Operator |
 
 ## Maintainers
 
