@@ -4,95 +4,56 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: KrakenD
 providerId: krakend
 created: '2026-05-04'
-modified: '2026-05-04'
+modified: '2026-05-05'
+reconciled: true
 tags:
-  - Aggregation
-  - API Gateway
-  - Go
-  - Open Source
   - Rate Limiting
-  - Quotas
-  - Throttling
-description: Machine-readable rate limit definitions for the KrakenD API surface. Captures per-tier quotas,
-  burst behavior, response signaling, and recovery semantics. Defaults are scaffold values to be replaced
-  with published provider limits.
-headers:
-  limit: X-RateLimit-Limit
-  remaining: X-RateLimit-Remaining
-  reset: X-RateLimit-Reset
-  retryAfter: Retry-After
-  policy: RateLimit-Policy
+  - API Gateway
+  - API Aggregation
+description: KrakenD is self-hosted software, not a hosted API service, so it does not impose vendor-side
+  rate limits on its customers. Operators configure their own rate limiting using the built-in `qos/ratelimit/router`
+  (per-endpoint) and `qos/ratelimit/proxy` (per-backend) middleware, plus the Enterprise `security/policies`
+  layer for advanced quotas. License usage is unconstrained — Enterprise pricing explicitly is not linked
+  to API count or throughput.
+sources:
+  - https://www.krakend.io/enterprise/
+  - https://www.krakend.io/docs/endpoints/rate-limit/
+notes: KrakenD itself is shipped software; vendor-side throttling does not exist. Limits below describe
+  the built-in middleware operators apply to their own data-plane traffic.
 responseCodes:
   throttled: 429
-  quotaExceeded: 429
   serviceUnavailable: 503
 limits:
-  - tier: free
-    name: Free Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 10
-    burst: 20
-    timeFrame: minute
-    applies:
-      - KrakenD
-      - KrakenD Service API
-      - KrakenD Async Agent
-  - tier: free
-    name: Free Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 1000
-    timeFrame: month
-    applies:
-      - KrakenD
-      - KrakenD Service API
-      - KrakenD Async Agent
-  - tier: professional
-    name: Professional Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 100
-    burst: 200
-    timeFrame: minute
-    applies:
-      - KrakenD
-      - KrakenD Service API
-      - KrakenD Async Agent
-  - tier: professional
-    name: Professional Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 100000
-    timeFrame: month
-    applies:
-      - KrakenD
-      - KrakenD Service API
-      - KrakenD Async Agent
-  - tier: enterprise
-    name: Enterprise Negotiated Limit
-    scope: contract
-    metric: requests_per_minute
-    limit: 1000
-    burst: 5000
-    timeFrame: minute
-    applies:
-      - KrakenD
-      - KrakenD Service API
-      - KrakenD Async Agent
+  - name: License throughput
+    scope: license
+    metric: requests_per_second
+    limit: -1
+    notes: Enterprise pricing not tied to API count or throughput.
+  - name: Endpoint rate limit (operator-configured)
+    scope: endpoint
+    metric: requests_per_second
+    limit: 'configured per endpoint via qos/ratelimit/router'
+  - name: Proxy rate limit (operator-configured)
+    scope: backend
+    metric: requests_per_second
+    limit: 'configured per backend via qos/ratelimit/proxy'
+  - name: Client rate limit (operator-configured)
+    scope: client
+    metric: requests_per_second
+    limit: 'configured via client_max_rate (token-bucket per client IP / header)'
 policies:
-  - name: Backoff Strategy
-    description: Clients should implement exponential backoff with jitter, honoring the Retry-After header
-      when present.
-  - name: Burst Handling
-    description: Short bursts above the steady-state limit are tolerated up to the documented burst ceiling
-      before throttling engages.
-  - name: Quota Reset
-    description: Monthly quotas reset at the start of each calendar month in UTC. Per-minute and per-second
-      windows reset on a sliding-window basis.
-  - name: Fair Use
-    description: Even on uncapped enterprise tiers, sustained usage that materially impacts shared infrastructure
-      may be subject to fair-use throttling.
+  - name: Operator-defined throttling
+    description: Rate limiting in KrakenD is configured by the operator in krakend.json; it is not enforced
+      by the vendor.
+  - name: Token-bucket
+    description: Built-in rate limiters use a token-bucket algorithm with `max_rate` (steady) and `capacity`
+      (burst).
+  - name: Standard headers
+    description: When throttled, KrakenD returns 429 and may emit X-RateLimit-Limit / X-RateLimit-Remaining
+      / X-RateLimit-Reset depending on plugin configuration.
+  - name: Stateless scaling
+    description: KrakenD is stateless; rate-limit state is per-instance unless backed by a shared store.
+      Horizontal scaling effectively multiplies the configured rate per instance.
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
