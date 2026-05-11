@@ -116,6 +116,38 @@ common:
     url: json-schema/service-config.json
   - type: JSON-LD
     url: json-ld/krakend-context.jsonld
+  - type: Integrations
+    url: https://www.krakend.io/partners/
+integrations:
+  - name: KrakenD API Gateway
+  - name: Single.Earth image
+  - name: Software Architect, Single.Earth
+  - name: lastminute.com image
+  - name: Enterprise Architecture, lastminute.com
+  - name: Coop Atlantique image
+  - name: Senior Engineer, Coop Atlantique
+  - name: Background Pattern
+  - name: logo partner Torry Harris
+  - name: logo partner Massil Technologies
+  - name: logo partner Convert Digital
+  - name: logo partner CloudAPPi
+  - name: logo partner Target Solutions
+  - name: logo partner Beat
+  - name: logo partner Nusaprima
+  - name: logo partner SETSIBI
+  - name: logo partner Carahsoft
+  - name: logo partner Litis
+  - name: logo partner OSC Korea
+  - name: logo partner Skalena
+  - name: logo partner Ardanlabs
+  - name: logo partner Cogitosoft
+  - name: Background
+  - name: logo partner Microsoft
+  - name: logo partner Amazon Web Services
+  - name: logo partner Auth0
+  - name: logo partner Moesif
+  - name: icon
+  - name: SOC Certification
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
