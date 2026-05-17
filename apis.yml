@@ -31,17 +31,17 @@ apis:
     properties:
       - type: Documentation
         url: https://www.krakend.io/docs/overview/
-      - type: Getting Started
+      - type: GettingStarted
         url: https://www.krakend.io/docs/overview/introduction/
       - type: Reference
         url: https://www.krakend.io/docs/configuration/structure/
-      - type: Change Log
+      - type: ChangeLog
         url: https://github.com/krakend/krakend-ce/releases
       - type: GitHubRepository
         url: https://github.com/krakend/krakend-ce
       - type: JSONSchema
         url: json-schema/service-config.json
-      - type: JSON-LD
+      - type: JSONLD
         url: json-ld/krakend-context.jsonld
   - aid: krakend:krakend-service-api
     name: KrakenD Service API
@@ -94,19 +94,19 @@ common:
     url: https://www.krakend.io/
   - type: Documentation
     url: https://www.krakend.io/docs/
-  - type: Getting Started
+  - type: GettingStarted
     url: https://www.krakend.io/docs/overview/introduction/
   - type: Blog
     url: https://www.krakend.io/blog/
-  - type: Change Log
+  - type: ChangeLog
     url: https://github.com/krakend/krakend-ce/releases
-  - type: GitHub Organization
+  - type: GitHubOrganization
     url: https://github.com/krakend
   - type: GitHubRepository
     url: https://github.com/krakend/krakend-ce
   - type: Community
     url: https://community.krakend.io/
-  - type: Stack Overflow
+  - type: StackOverflow
     url: https://stackoverflow.com/questions/tagged/krakend
   - type: Issue Tracker
     url: https://github.com/krakend/krakend-ce/issues
@@ -114,7 +114,7 @@ common:
     url: https://designer.krakend.io/
   - type: JSONSchema
     url: json-schema/service-config.json
-  - type: JSON-LD
+  - type: JSONLD
     url: json-ld/krakend-context.jsonld
   - type: Integrations
     url: https://www.krakend.io/partners/
