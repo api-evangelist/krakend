@@ -1,0 +1,67 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: KrakenD Service API — Health
+  description: 'KrakenD Service API — Health. 1 operations. Lead operation: KrakenD Health check. Self-contained Naftiko capability
+    covering one Krakend business surface.'
+  tags:
+  - Krakend
+  - Health
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    KRAKEND_API_KEY: KRAKEND_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: service-health
+    baseUri: http://localhost:8080
+    description: KrakenD Service API — Health business capability. Self-contained, no shared references.
+    resources:
+    - name: __health
+      path: /__health
+      operations:
+      - name: gethealth
+        method: GET
+        description: KrakenD Health check
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+  exposes:
+  - type: rest
+    namespace: service-health-rest
+    port: 8080
+    description: REST adapter for KrakenD Service API — Health. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/health
+      name: health
+      description: REST surface for __health.
+      operations:
+      - method: GET
+        name: gethealth
+        description: KrakenD Health check
+        call: service-health.gethealth
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: service-health-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for KrakenD Service API — Health. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: krakend-health-check
+      description: KrakenD Health check
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: service-health.gethealth
+      outputParameters:
+      - type: object
+        mapping: $.

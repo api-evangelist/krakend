@@ -1,0 +1,151 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: KrakenD Service API — Debug
+  description: 'KrakenD Service API — Debug. 3 operations. Lead operation: KrakenD Debug endpoint. Self-contained Naftiko
+    capability covering one Krakend business surface.'
+  tags:
+  - Krakend
+  - Debug
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    KRAKEND_API_KEY: KRAKEND_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: service-debug
+    baseUri: http://localhost:8080
+    description: KrakenD Service API — Debug business capability. Self-contained, no shared references.
+    resources:
+    - name: __debug-path
+      path: /__debug/{path}
+      operations:
+      - name: debugendpoint
+        method: GET
+        description: KrakenD Debug endpoint
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: path
+          in: path
+          type: string
+          description: Any sub-path for debugging purposes.
+          required: true
+      - name: debugendpointpost
+        method: POST
+        description: KrakenD Debug endpoint (POST)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: path
+          in: path
+          type: string
+          description: Any sub-path for debugging purposes.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: __echo
+      path: /__echo/
+      operations:
+      - name: echoendpoint
+        method: GET
+        description: KrakenD Echo endpoint
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+  exposes:
+  - type: rest
+    namespace: service-debug-rest
+    port: 8080
+    description: REST adapter for KrakenD Service API — Debug. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/debug/{path}
+      name: debug-path
+      description: REST surface for __debug-path.
+      operations:
+      - method: GET
+        name: debugendpoint
+        description: KrakenD Debug endpoint
+        call: service-debug.debugendpoint
+        with:
+          path: rest.path
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: debugendpointpost
+        description: KrakenD Debug endpoint (POST)
+        call: service-debug.debugendpointpost
+        with:
+          path: rest.path
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/echo
+      name: echo
+      description: REST surface for __echo.
+      operations:
+      - method: GET
+        name: echoendpoint
+        description: KrakenD Echo endpoint
+        call: service-debug.echoendpoint
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: service-debug-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for KrakenD Service API — Debug. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: krakend-debug-endpoint
+      description: KrakenD Debug endpoint
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: service-debug.debugendpoint
+      with:
+        path: tools.path
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: krakend-debug-endpoint-post
+      description: KrakenD Debug endpoint (POST)
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: service-debug.debugendpointpost
+      with:
+        path: tools.path
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: krakend-echo-endpoint
+      description: KrakenD Echo endpoint
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: service-debug.echoendpoint
+      outputParameters:
+      - type: object
+        mapping: $.
