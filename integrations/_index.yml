@@ -1,0 +1,70 @@
+- slug: krakend-prometheus
+  label: Scrape KrakenD gateway metrics into Prometheus
+  partner: prometheus
+  category: Observability
+  use_case: Pull KrakenD's extended /__stats endpoint at a scrape interval and convert the JSON metrics into Prometheus exposition format so SRE teams can chart gateway latency, throughput, and error rates in their existing Prometheus + Grafana stack.
+- slug: krakend-opentelemetry
+  label: Export KrakenD gateway traces via OpenTelemetry OTLP
+  partner: opentelemetry
+  category: Observability
+  use_case: Ship KrakenD per-request trace spans (with the upstream backend fanout topology) to an OTLP collector so platform teams can correlate gateway latency with downstream microservice spans in a single distributed trace.
+- slug: krakend-datadog
+  label: Stream KrakenD gateway metrics and events into Datadog
+  partner: datadog
+  category: Observability
+  use_case: Forward KrakenD gateway request counts, latency percentiles, and per-backend error rates into Datadog as custom metrics, plus high-cardinality deploy and health-state changes as Datadog events for unified API observability dashboards.
+- slug: krakend-github
+  label: Promote KrakenD config from GitHub on tagged release
+  partner: github
+  category: CI/CD
+  use_case: When a tagged release is cut in the GitHub repo holding the KrakenD declarative config, validate the new krakend.json against the live gateway's /__debug endpoint, then trigger a rolling restart so the new config takes effect across all gateway instances.
+- slug: krakend-auth0
+  label: Validate Auth0-issued JWTs at the KrakenD gateway edge
+  partner: auth0
+  category: Identity
+  use_case: Use KrakenD's JWT validator plugin pointed at Auth0's JWKS endpoint to enforce token signature, expiry, audience, and required scopes at the gateway edge — rejecting unauthenticated calls before they ever reach a backend service.
+- slug: krakend-okta
+  label: Enforce Okta scope-based authorization at the KrakenD edge
+  partner: okta
+  category: Identity
+  use_case: Configure KrakenD to validate Okta-issued access tokens, then map required scopes to specific KrakenD endpoints so each backend route enforces the least-privilege Okta scope before the gateway will fan out to upstream services.
+- slug: krakend-keycloak
+  label: Federate Keycloak realms into KrakenD JWT validation
+  partner: keycloak
+  category: Identity
+  use_case: Point KrakenD's JWT validator at a Keycloak realm's OIDC discovery document so the gateway transparently accepts Keycloak-issued tokens — useful for self-hosted identity stacks that need an edge-enforced trust boundary in front of internal APIs.
+- slug: krakend-redis
+  label: Cache KrakenD aggregated responses in Redis
+  partner: redis
+  category: Caching
+  use_case: Use Redis as a shared response cache in front of KrakenD's response aggregator so repeated BFF calls that fan out to 4-6 upstream services can be served in single-digit milliseconds from Redis instead of re-aggregating every time.
+- slug: krakend-opa
+  label: Enforce Open Policy Agent decisions on KrakenD routes
+  partner: opa
+  category: Governance
+  use_case: Before KrakenD forwards a request to an upstream backend, call out to an Open Policy Agent sidecar to evaluate the request context (caller, scope, headers, path) against Rego policy bundles — rejecting calls that violate governance rules at the edge.
+- slug: krakend-kafka
+  label: Stream KrakenD gateway access logs into Kafka
+  partner: kafka
+  category: Streaming
+  use_case: Push KrakenD's per-request access log records into a Kafka topic via the Confluent REST Proxy so downstream consumers (SIEM, billing meter, anomaly detection) can subscribe to a real-time gateway-traffic firehose without coupling to KrakenD itself.
+- slug: krakend-aws-lambda
+  label: Use AWS Lambda as a serverless KrakenD backend
+  partner: aws-lambda
+  category: Backends
+  use_case: Configure KrakenD to invoke AWS Lambda functions as backends (instead of HTTP services) so a single KrakenD endpoint can fan out to a mix of containerized services and serverless Lambda functions, with the gateway handling aggregation and response shaping.
+- slug: krakend-grpc
+  label: Bridge gRPC microservices through KrakenD as REST + JSON
+  partner: grpc
+  category: Backends
+  use_case: Configure KrakenD's gRPC backend support to expose internal gRPC services to mobile and web clients as REST + JSON endpoints, with KrakenD handling the protocol translation, field mapping, and request aggregation.
+- slug: krakend-graphql
+  label: Aggregate GraphQL upstreams into a KrakenD BFF endpoint
+  partner: graphql
+  category: Backends
+  use_case: Use KrakenD's response aggregator to fan out a single client request to multiple GraphQL upstream services (or REST + GraphQL hybrids), merging the responses into one BFF payload optimized for mobile or web client consumption.
+- slug: krakend-anthropic
+  label: Front Anthropic's Claude API with KrakenD as an AI gateway
+  partner: anthropic
+  category: AI Gateway
+  use_case: Use KrakenD in front of Anthropic's Messages API to add a single edge-enforced layer for API key rotation, per-tenant rate limiting, prompt-injection filtering, and cost attribution before requests reach Claude — turning KrakenD into a proper AI gateway for the enterprise.

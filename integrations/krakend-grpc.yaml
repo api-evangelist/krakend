@@ -1,0 +1,139 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Bridge gRPC microservices through KrakenD as REST + JSON
+  description: Configure KrakenD's gRPC backend support to expose internal gRPC services to mobile and web clients as REST + JSON endpoints, with KrakenD handling the protocol translation, field mapping, and request aggregation.
+  tags:
+  - KrakenD
+  - Integration
+  - Backends
+  - grpc
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    KRAKEND_API_KEY: KRAKEND_API_KEY
+    GRPC_API_KEY: GRPC_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: krakend
+    baseUri: https://api.krakend.io
+    description: KrakenD API operations consumed by this integration.
+    resources:
+    - name: stats
+      path: /__stats/
+      operations:
+      - name: getstats
+        method: GET
+        description: Track gRPC translation latency per endpoint.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+    - name: debug-path
+      path: /__debug/{path}
+      operations:
+      - name: debugendpointpost
+        method: POST
+        description: Inspect translated gRPC payloads via the debug endpoint during BFF development.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: path
+          in: path
+          type: string
+          description: Path parameter path.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+  - type: http
+    namespace: grpc
+    baseUri: https://grpc-gateway.internal.example.com
+    description: gRPC-Gateway HTTP API operations consumed by this integration.
+    resources:
+    - name: v1-service-method
+      path: /v1/{service}/{method}
+      operations:
+      - name: invokerpc
+        method: POST
+        description: 'gRPC-Gateway HTTP API: invokeRpc'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: service
+          in: path
+          type: string
+          description: Path parameter service.
+          required: true
+        - name: method
+          in: path
+          type: string
+          description: Path parameter method.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: v1-service-reflect
+      path: /v1/{service}/reflect
+      operations:
+      - name: reflectservice
+        method: GET
+        description: 'gRPC-Gateway HTTP API: reflectService'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: service
+          in: path
+          type: string
+          description: Path parameter service.
+          required: true
+  exposes:
+  - type: mcp
+    namespace: krakend-grpc-mcp
+    description: MCP adapter for the krakend-grpc integration.
+    tools:
+    - name: krakend_grpc
+      description: Execute the krakend grpc integration end-to-end.
+      inputSchema:
+        type: object
+        properties:
+          trigger_event:
+            type: object
+            description: Triggering event payload.
+        required:
+        - trigger_event
+  - type: rest
+    namespace: krakend-grpc-rest
+    port: 8080
+    description: REST adapter for the krakend-grpc integration.
+    resources:
+    - path: /krakend-grpc
+      name: krakend-grpc
+      description: REST surface for the krakend-grpc integration.
+      operations:
+      - method: POST
+        name: trigger
+        description: Trigger the krakend-grpc integration.
+        call: krakend_grpc
+        with:
+          trigger_event: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.

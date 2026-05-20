@@ -1,0 +1,338 @@
+# Curated KrakenD integrations. Each entry becomes one Naftiko capability YAML in integrations/.
+# Categories reflect KrakenD's actual strengths: stateless API gateway, backend-for-frontend (BFF),
+# response aggregation, transformation, and edge security.
+# KrakenD-side paths use real endpoints from temp/krakend/openapi/krakend-service-api-openapi.yml:
+#   /__health   (health check, enabled by default)
+#   /__stats/   (extended metrics)
+#   /__debug/{path}  (debug endpoint)
+#   /__echo/    (echo endpoint)
+
+# Observability (3)
+- partner: prometheus
+  name: Scrape KrakenD gateway metrics into Prometheus
+  category: Observability
+  use_case: Pull KrakenD's extended /__stats endpoint at a scrape interval and convert the JSON metrics into Prometheus exposition format so SRE teams can chart gateway latency, throughput, and error rates in their existing Prometheus + Grafana stack.
+  partner_baseUri: https://prometheus.internal.example.com
+  partner_api: Prometheus Remote Write API
+  provider_ops:
+    - method: GET
+      path: /__stats/
+      name: getStats
+      description: Pull KrakenD's extended runtime metrics for conversion to Prometheus exposition format.
+    - method: GET
+      path: /__health
+      name: getHealth
+      description: KrakenD gateway health check used to mark the metric series up/down.
+  partner_ops:
+    - method: POST
+      path: /api/v1/write
+      name: remoteWrite
+    - method: GET
+      path: /api/v1/query
+      name: instantQuery
+
+- partner: opentelemetry
+  name: Export KrakenD gateway traces via OpenTelemetry OTLP
+  category: Observability
+  use_case: Ship KrakenD per-request trace spans (with the upstream backend fanout topology) to an OTLP collector so platform teams can correlate gateway latency with downstream microservice spans in a single distributed trace.
+  partner_baseUri: https://otlp.internal.example.com
+  partner_api: OpenTelemetry OTLP HTTP API
+  provider_ops:
+    - method: GET
+      path: /__stats/
+      name: getStats
+      description: Pull KrakenD per-endpoint statistics to enrich trace span attributes.
+    - method: GET
+      path: /__debug/{path}
+      name: getDebug
+      description: Trigger KrakenD debug instrumentation for a given route to capture span detail.
+  partner_ops:
+    - method: POST
+      path: /v1/traces
+      name: exportTraces
+    - method: POST
+      path: /v1/metrics
+      name: exportMetrics
+
+- partner: datadog
+  name: Stream KrakenD gateway metrics and events into Datadog
+  category: Observability
+  use_case: Forward KrakenD gateway request counts, latency percentiles, and per-backend error rates into Datadog as custom metrics, plus high-cardinality deploy and health-state changes as Datadog events for unified API observability dashboards.
+  partner_baseUri: https://api.datadoghq.com
+  partner_api: Datadog Metrics API
+  provider_ops:
+    - method: GET
+      path: /__stats/
+      name: getStats
+      description: Pull KrakenD extended runtime metrics for shipping to Datadog.
+    - method: GET
+      path: /__health
+      name: getHealth
+      description: KrakenD health check used to gate metric submission and flag downtime events.
+  partner_ops:
+    - method: POST
+      path: /api/v2/series
+      name: submitMetrics
+    - method: POST
+      path: /api/v1/events
+      name: postEvent
+
+# CI/CD / config (1)
+- partner: github
+  name: Promote KrakenD config from GitHub on tagged release
+  category: CI/CD
+  use_case: When a tagged release is cut in the GitHub repo holding the KrakenD declarative config, validate the new krakend.json against the live gateway's /__debug endpoint, then trigger a rolling restart so the new config takes effect across all gateway instances.
+  partner_baseUri: https://api.github.com
+  partner_api: GitHub REST API
+  provider_ops:
+    - method: POST
+      path: /__debug/{path}
+      name: debugEndpointPost
+      description: Use KrakenD's debug endpoint to validate the new declarative config under load before promotion.
+    - method: GET
+      path: /__health
+      name: getHealth
+      description: Poll KrakenD health to confirm the new config has rolled out successfully.
+  partner_ops:
+    - method: GET
+      path: /repos/{owner}/{repo}/releases/latest
+      name: getLatestRelease
+    - method: GET
+      path: /repos/{owner}/{repo}/contents/{path}
+      name: getContent
+
+# Identity / auth (3)
+- partner: auth0
+  name: Validate Auth0-issued JWTs at the KrakenD gateway edge
+  category: Identity
+  use_case: Use KrakenD's JWT validator plugin pointed at Auth0's JWKS endpoint to enforce token signature, expiry, audience, and required scopes at the gateway edge — rejecting unauthenticated calls before they ever reach a backend service.
+  partner_baseUri: https://yourdomain.auth0.com
+  partner_api: Auth0 Management API
+  provider_ops:
+    - method: GET
+      path: /__health
+      name: getHealth
+      description: Confirm KrakenD is up before exposing protected routes behind the JWT validator.
+    - method: GET
+      path: /__stats/
+      name: getStats
+      description: Pull per-endpoint stats to track 401 rates for misconfigured JWT validation.
+  partner_ops:
+    - method: GET
+      path: /.well-known/jwks.json
+      name: getJwks
+    - method: GET
+      path: /api/v2/users/{id}
+      name: getUser
+
+- partner: okta
+  name: Enforce Okta scope-based authorization at the KrakenD edge
+  category: Identity
+  use_case: Configure KrakenD to validate Okta-issued access tokens, then map required scopes to specific KrakenD endpoints so each backend route enforces the least-privilege Okta scope before the gateway will fan out to upstream services.
+  partner_baseUri: https://yourdomain.okta.com
+  partner_api: Okta API
+  provider_ops:
+    - method: GET
+      path: /__health
+      name: getHealth
+      description: Confirm gateway readiness before publishing Okta-protected routes.
+    - method: GET
+      path: /__stats/
+      name: getStats
+      description: Track authorization failure rates per Okta-protected endpoint.
+  partner_ops:
+    - method: GET
+      path: /oauth2/default/v1/keys
+      name: getKeys
+    - method: POST
+      path: /oauth2/default/v1/introspect
+      name: introspectToken
+
+- partner: keycloak
+  name: Federate Keycloak realms into KrakenD JWT validation
+  category: Identity
+  use_case: Point KrakenD's JWT validator at a Keycloak realm's OIDC discovery document so the gateway transparently accepts Keycloak-issued tokens — useful for self-hosted identity stacks that need an edge-enforced trust boundary in front of internal APIs.
+  partner_baseUri: https://keycloak.internal.example.com
+  partner_api: Keycloak Admin REST API
+  provider_ops:
+    - method: GET
+      path: /__health
+      name: getHealth
+      description: Verify KrakenD is healthy before federating realm trust.
+    - method: GET
+      path: /__stats/
+      name: getStats
+      description: Monitor token-validation latency added by Keycloak federation.
+  partner_ops:
+    - method: GET
+      path: /realms/{realm}/.well-known/openid-configuration
+      name: getOpenIdConfig
+    - method: GET
+      path: /admin/realms/{realm}/users
+      name: listUsers
+
+# Caching (1)
+- partner: redis
+  name: Cache KrakenD aggregated responses in Redis
+  category: Caching
+  use_case: Use Redis as a shared response cache in front of KrakenD's response aggregator so repeated BFF calls that fan out to 4-6 upstream services can be served in single-digit milliseconds from Redis instead of re-aggregating every time.
+  partner_baseUri: https://redis-rest.internal.example.com
+  partner_api: Redis REST API
+  provider_ops:
+    - method: GET
+      path: /__stats/
+      name: getStats
+      description: Pull aggregation latency and cache-hit metrics to size Redis appropriately.
+    - method: GET
+      path: /__health
+      name: getHealth
+      description: Confirm KrakenD is healthy before promoting cached responses to clients.
+  partner_ops:
+    - method: POST
+      path: /set/{key}
+      name: setKey
+    - method: GET
+      path: /get/{key}
+      name: getKey
+
+# Governance / policy (1)
+- partner: opa
+  name: Enforce Open Policy Agent decisions on KrakenD routes
+  category: Governance
+  use_case: Before KrakenD forwards a request to an upstream backend, call out to an Open Policy Agent sidecar to evaluate the request context (caller, scope, headers, path) against Rego policy bundles — rejecting calls that violate governance rules at the edge.
+  partner_baseUri: https://opa.internal.example.com
+  partner_api: Open Policy Agent Data API
+  provider_ops:
+    - method: GET
+      path: /__stats/
+      name: getStats
+      description: Pull per-endpoint stats to track OPA denial rates per route.
+    - method: GET
+      path: /__health
+      name: getHealth
+      description: Health check used to gate OPA-enforced routes.
+  partner_ops:
+    - method: POST
+      path: /v1/data/krakend/allow
+      name: evaluatePolicy
+    - method: GET
+      path: /v1/policies
+      name: listPolicies
+
+# Streaming / logging (1)
+- partner: kafka
+  name: Stream KrakenD gateway access logs into Kafka
+  category: Streaming
+  use_case: Push KrakenD's per-request access log records into a Kafka topic via the Confluent REST Proxy so downstream consumers (SIEM, billing meter, anomaly detection) can subscribe to a real-time gateway-traffic firehose without coupling to KrakenD itself.
+  partner_baseUri: https://kafka-rest.internal.example.com
+  partner_api: Confluent Kafka REST Proxy
+  provider_ops:
+    - method: GET
+      path: /__stats/
+      name: getStats
+      description: Pull KrakenD throughput stats to size Kafka partition counts for the access-log topic.
+    - method: GET
+      path: /__health
+      name: getHealth
+      description: Confirm KrakenD is healthy before declaring the log stream live.
+  partner_ops:
+    - method: POST
+      path: /topics/{topic_name}
+      name: produceMessage
+    - method: GET
+      path: /consumers/{group}/instances/{instance}/records
+      name: consumeMessages
+
+# Backends (3)
+- partner: aws-lambda
+  name: Use AWS Lambda as a serverless KrakenD backend
+  category: Backends
+  use_case: Configure KrakenD to invoke AWS Lambda functions as backends (instead of HTTP services) so a single KrakenD endpoint can fan out to a mix of containerized services and serverless Lambda functions, with the gateway handling aggregation and response shaping.
+  partner_baseUri: https://lambda.us-east-1.amazonaws.com
+  partner_api: AWS Lambda API
+  provider_ops:
+    - method: GET
+      path: /__stats/
+      name: getStats
+      description: Track Lambda invocation latency and cold-start rates as KrakenD stats.
+    - method: POST
+      path: /__debug/{path}
+      name: debugEndpointPost
+      description: Use the debug endpoint to inspect Lambda response payload shape during integration.
+  partner_ops:
+    - method: POST
+      path: /2015-03-31/functions/{FunctionName}/invocations
+      name: invokeFunction
+    - method: GET
+      path: /2015-03-31/functions/{FunctionName}
+      name: getFunction
+
+- partner: grpc
+  name: Bridge gRPC microservices through KrakenD as REST + JSON
+  category: Backends
+  use_case: Configure KrakenD's gRPC backend support to expose internal gRPC services to mobile and web clients as REST + JSON endpoints, with KrakenD handling the protocol translation, field mapping, and request aggregation.
+  partner_baseUri: https://grpc-gateway.internal.example.com
+  partner_api: gRPC-Gateway HTTP API
+  provider_ops:
+    - method: GET
+      path: /__stats/
+      name: getStats
+      description: Track gRPC translation latency per endpoint.
+    - method: POST
+      path: /__debug/{path}
+      name: debugEndpointPost
+      description: Inspect translated gRPC payloads via the debug endpoint during BFF development.
+  partner_ops:
+    - method: POST
+      path: /v1/{service}/{method}
+      name: invokeRpc
+    - method: GET
+      path: /v1/{service}/reflect
+      name: reflectService
+
+- partner: graphql
+  name: Aggregate GraphQL upstreams into a KrakenD BFF endpoint
+  category: Backends
+  use_case: Use KrakenD's response aggregator to fan out a single client request to multiple GraphQL upstream services (or REST + GraphQL hybrids), merging the responses into one BFF payload optimized for mobile or web client consumption.
+  partner_baseUri: https://graphql.internal.example.com
+  partner_api: GraphQL HTTP API
+  provider_ops:
+    - method: GET
+      path: /__stats/
+      name: getStats
+      description: Track GraphQL upstream aggregation latency per endpoint.
+    - method: POST
+      path: /__debug/{path}
+      name: debugEndpointPost
+      description: Inspect aggregated GraphQL response shape during BFF endpoint design.
+  partner_ops:
+    - method: POST
+      path: /graphql
+      name: executeQuery
+    - method: GET
+      path: /graphql/schema
+      name: getSchema
+
+# AI gateway (1)
+- partner: anthropic
+  name: Front Anthropic's Claude API with KrakenD as an AI gateway
+  category: AI Gateway
+  use_case: Use KrakenD in front of Anthropic's Messages API to add a single edge-enforced layer for API key rotation, per-tenant rate limiting, prompt-injection filtering, and cost attribution before requests reach Claude — turning KrakenD into a proper AI gateway for the enterprise.
+  partner_baseUri: https://api.anthropic.com
+  partner_api: Anthropic Messages API
+  provider_ops:
+    - method: GET
+      path: /__stats/
+      name: getStats
+      description: Track per-tenant Claude token spend and request rate via KrakenD stats.
+    - method: GET
+      path: /__health
+      name: getHealth
+      description: Health check used to gate AI gateway traffic during model rollouts.
+  partner_ops:
+    - method: POST
+      path: /v1/messages
+      name: createMessage
+    - method: GET
+      path: /v1/models
+      name: listModels

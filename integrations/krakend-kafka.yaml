@@ -1,0 +1,129 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Stream KrakenD gateway access logs into Kafka
+  description: Push KrakenD's per-request access log records into a Kafka topic via the Confluent REST Proxy so downstream consumers (SIEM, billing meter, anomaly detection) can subscribe to a real-time gateway-traffic firehose without coupling to KrakenD itself.
+  tags:
+  - KrakenD
+  - Integration
+  - Streaming
+  - kafka
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    KRAKEND_API_KEY: KRAKEND_API_KEY
+    KAFKA_API_KEY: KAFKA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: krakend
+    baseUri: https://api.krakend.io
+    description: KrakenD API operations consumed by this integration.
+    resources:
+    - name: stats
+      path: /__stats/
+      operations:
+      - name: getstats
+        method: GET
+        description: Pull KrakenD throughput stats to size Kafka partition counts for the access-log topic.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+    - name: health
+      path: /__health
+      operations:
+      - name: gethealth
+        method: GET
+        description: Confirm KrakenD is healthy before declaring the log stream live.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+  - type: http
+    namespace: kafka
+    baseUri: https://kafka-rest.internal.example.com
+    description: Confluent Kafka REST Proxy operations consumed by this integration.
+    resources:
+    - name: topics-topic-name
+      path: /topics/{topic_name}
+      operations:
+      - name: producemessage
+        method: POST
+        description: 'Confluent Kafka REST Proxy: produceMessage'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: topic_name
+          in: path
+          type: string
+          description: Path parameter topic_name.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: consumers-group-instances-instance-records
+      path: /consumers/{group}/instances/{instance}/records
+      operations:
+      - name: consumemessages
+        method: GET
+        description: 'Confluent Kafka REST Proxy: consumeMessages'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: group
+          in: path
+          type: string
+          description: Path parameter group.
+          required: true
+        - name: instance
+          in: path
+          type: string
+          description: Path parameter instance.
+          required: true
+  exposes:
+  - type: mcp
+    namespace: krakend-kafka-mcp
+    description: MCP adapter for the krakend-kafka integration.
+    tools:
+    - name: krakend_kafka
+      description: Execute the krakend kafka integration end-to-end.
+      inputSchema:
+        type: object
+        properties:
+          trigger_event:
+            type: object
+            description: Triggering event payload.
+        required:
+        - trigger_event
+  - type: rest
+    namespace: krakend-kafka-rest
+    port: 8080
+    description: REST adapter for the krakend-kafka integration.
+    resources:
+    - path: /krakend-kafka
+      name: krakend-kafka
+      description: REST surface for the krakend-kafka integration.
+      operations:
+      - method: POST
+        name: trigger
+        description: Trigger the krakend-kafka integration.
+        call: krakend_kafka
+        with:
+          trigger_event: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.

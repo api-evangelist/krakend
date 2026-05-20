@@ -1,0 +1,114 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Enforce Open Policy Agent decisions on KrakenD routes
+  description: Before KrakenD forwards a request to an upstream backend, call out to an Open Policy Agent sidecar to evaluate the request context (caller, scope, headers, path) against Rego policy bundles — rejecting calls that violate governance rules at the edge.
+  tags:
+  - KrakenD
+  - Integration
+  - Governance
+  - opa
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    KRAKEND_API_KEY: KRAKEND_API_KEY
+    OPA_API_KEY: OPA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: krakend
+    baseUri: https://api.krakend.io
+    description: KrakenD API operations consumed by this integration.
+    resources:
+    - name: stats
+      path: /__stats/
+      operations:
+      - name: getstats
+        method: GET
+        description: Pull per-endpoint stats to track OPA denial rates per route.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+    - name: health
+      path: /__health
+      operations:
+      - name: gethealth
+        method: GET
+        description: Health check used to gate OPA-enforced routes.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+  - type: http
+    namespace: opa
+    baseUri: https://opa.internal.example.com
+    description: Open Policy Agent Data API operations consumed by this integration.
+    resources:
+    - name: v1-data-krakend-allow
+      path: /v1/data/krakend/allow
+      operations:
+      - name: evaluatepolicy
+        method: POST
+        description: 'Open Policy Agent Data API: evaluatePolicy'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: v1-policies
+      path: /v1/policies
+      operations:
+      - name: listpolicies
+        method: GET
+        description: 'Open Policy Agent Data API: listPolicies'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+  exposes:
+  - type: mcp
+    namespace: krakend-opa-mcp
+    description: MCP adapter for the krakend-opa integration.
+    tools:
+    - name: krakend_opa
+      description: Execute the krakend opa integration end-to-end.
+      inputSchema:
+        type: object
+        properties:
+          trigger_event:
+            type: object
+            description: Triggering event payload.
+        required:
+        - trigger_event
+  - type: rest
+    namespace: krakend-opa-rest
+    port: 8080
+    description: REST adapter for the krakend-opa integration.
+    resources:
+    - path: /krakend-opa
+      name: krakend-opa
+      description: REST surface for the krakend-opa integration.
+      operations:
+      - method: POST
+        name: trigger
+        description: Trigger the krakend-opa integration.
+        call: krakend_opa
+        with:
+          trigger_event: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.

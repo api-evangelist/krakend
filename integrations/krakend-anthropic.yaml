@@ -1,0 +1,114 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Front Anthropic's Claude API with KrakenD as an AI gateway
+  description: Use KrakenD in front of Anthropic's Messages API to add a single edge-enforced layer for API key rotation, per-tenant rate limiting, prompt-injection filtering, and cost attribution before requests reach Claude — turning KrakenD into a proper AI gateway for the enterprise.
+  tags:
+  - KrakenD
+  - Integration
+  - AI Gateway
+  - anthropic
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    KRAKEND_API_KEY: KRAKEND_API_KEY
+    ANTHROPIC_API_KEY: ANTHROPIC_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: krakend
+    baseUri: https://api.krakend.io
+    description: KrakenD API operations consumed by this integration.
+    resources:
+    - name: stats
+      path: /__stats/
+      operations:
+      - name: getstats
+        method: GET
+        description: Track per-tenant Claude token spend and request rate via KrakenD stats.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+    - name: health
+      path: /__health
+      operations:
+      - name: gethealth
+        method: GET
+        description: Health check used to gate AI gateway traffic during model rollouts.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+  - type: http
+    namespace: anthropic
+    baseUri: https://api.anthropic.com
+    description: Anthropic Messages API operations consumed by this integration.
+    resources:
+    - name: v1-messages
+      path: /v1/messages
+      operations:
+      - name: createmessage
+        method: POST
+        description: 'Anthropic Messages API: createMessage'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: v1-models
+      path: /v1/models
+      operations:
+      - name: listmodels
+        method: GET
+        description: 'Anthropic Messages API: listModels'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+  exposes:
+  - type: mcp
+    namespace: krakend-anthropic-mcp
+    description: MCP adapter for the krakend-anthropic integration.
+    tools:
+    - name: krakend_anthropic
+      description: Execute the krakend anthropic integration end-to-end.
+      inputSchema:
+        type: object
+        properties:
+          trigger_event:
+            type: object
+            description: Triggering event payload.
+        required:
+        - trigger_event
+  - type: rest
+    namespace: krakend-anthropic-rest
+    port: 8080
+    description: REST adapter for the krakend-anthropic integration.
+    resources:
+    - path: /krakend-anthropic
+      name: krakend-anthropic
+      description: REST surface for the krakend-anthropic integration.
+      operations:
+      - method: POST
+        name: trigger
+        description: Trigger the krakend-anthropic integration.
+        call: krakend_anthropic
+        with:
+          trigger_event: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.

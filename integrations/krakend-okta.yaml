@@ -1,0 +1,114 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Enforce Okta scope-based authorization at the KrakenD edge
+  description: Configure KrakenD to validate Okta-issued access tokens, then map required scopes to specific KrakenD endpoints so each backend route enforces the least-privilege Okta scope before the gateway will fan out to upstream services.
+  tags:
+  - KrakenD
+  - Integration
+  - Identity
+  - okta
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    KRAKEND_API_KEY: KRAKEND_API_KEY
+    OKTA_API_KEY: OKTA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: krakend
+    baseUri: https://api.krakend.io
+    description: KrakenD API operations consumed by this integration.
+    resources:
+    - name: health
+      path: /__health
+      operations:
+      - name: gethealth
+        method: GET
+        description: Confirm gateway readiness before publishing Okta-protected routes.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+    - name: stats
+      path: /__stats/
+      operations:
+      - name: getstats
+        method: GET
+        description: Track authorization failure rates per Okta-protected endpoint.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+  - type: http
+    namespace: okta
+    baseUri: https://yourdomain.okta.com
+    description: Okta API operations consumed by this integration.
+    resources:
+    - name: oauth2-default-v1-keys
+      path: /oauth2/default/v1/keys
+      operations:
+      - name: getkeys
+        method: GET
+        description: 'Okta API: getKeys'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+    - name: oauth2-default-v1-introspect
+      path: /oauth2/default/v1/introspect
+      operations:
+      - name: introspecttoken
+        method: POST
+        description: 'Okta API: introspectToken'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+  exposes:
+  - type: mcp
+    namespace: krakend-okta-mcp
+    description: MCP adapter for the krakend-okta integration.
+    tools:
+    - name: krakend_okta
+      description: Execute the krakend okta integration end-to-end.
+      inputSchema:
+        type: object
+        properties:
+          trigger_event:
+            type: object
+            description: Triggering event payload.
+        required:
+        - trigger_event
+  - type: rest
+    namespace: krakend-okta-rest
+    port: 8080
+    description: REST adapter for the krakend-okta integration.
+    resources:
+    - path: /krakend-okta
+      name: krakend-okta
+      description: REST surface for the krakend-okta integration.
+      operations:
+      - method: POST
+        name: trigger
+        description: Trigger the krakend-okta integration.
+        call: krakend_okta
+        with:
+          trigger_event: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.

@@ -1,0 +1,124 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Export KrakenD gateway traces via OpenTelemetry OTLP
+  description: Ship KrakenD per-request trace spans (with the upstream backend fanout topology) to an OTLP collector so platform teams can correlate gateway latency with downstream microservice spans in a single distributed trace.
+  tags:
+  - KrakenD
+  - Integration
+  - Observability
+  - opentelemetry
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    KRAKEND_API_KEY: KRAKEND_API_KEY
+    OPENTELEMETRY_API_KEY: OPENTELEMETRY_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: krakend
+    baseUri: https://api.krakend.io
+    description: KrakenD API operations consumed by this integration.
+    resources:
+    - name: stats
+      path: /__stats/
+      operations:
+      - name: getstats
+        method: GET
+        description: Pull KrakenD per-endpoint statistics to enrich trace span attributes.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+    - name: debug-path
+      path: /__debug/{path}
+      operations:
+      - name: getdebug
+        method: GET
+        description: Trigger KrakenD debug instrumentation for a given route to capture span detail.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: path
+          in: path
+          type: string
+          description: Path parameter path.
+          required: true
+  - type: http
+    namespace: opentelemetry
+    baseUri: https://otlp.internal.example.com
+    description: OpenTelemetry OTLP HTTP API operations consumed by this integration.
+    resources:
+    - name: v1-traces
+      path: /v1/traces
+      operations:
+      - name: exporttraces
+        method: POST
+        description: 'OpenTelemetry OTLP HTTP API: exportTraces'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: v1-metrics
+      path: /v1/metrics
+      operations:
+      - name: exportmetrics
+        method: POST
+        description: 'OpenTelemetry OTLP HTTP API: exportMetrics'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+  exposes:
+  - type: mcp
+    namespace: krakend-opentelemetry-mcp
+    description: MCP adapter for the krakend-opentelemetry integration.
+    tools:
+    - name: krakend_opentelemetry
+      description: Execute the krakend opentelemetry integration end-to-end.
+      inputSchema:
+        type: object
+        properties:
+          trigger_event:
+            type: object
+            description: Triggering event payload.
+        required:
+        - trigger_event
+  - type: rest
+    namespace: krakend-opentelemetry-rest
+    port: 8080
+    description: REST adapter for the krakend-opentelemetry integration.
+    resources:
+    - path: /krakend-opentelemetry
+      name: krakend-opentelemetry
+      description: REST surface for the krakend-opentelemetry integration.
+      operations:
+      - method: POST
+        name: trigger
+        description: Trigger the krakend-opentelemetry integration.
+        call: krakend_opentelemetry
+        with:
+          trigger_event: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.

@@ -1,0 +1,124 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Cache KrakenD aggregated responses in Redis
+  description: Use Redis as a shared response cache in front of KrakenD's response aggregator so repeated BFF calls that fan out to 4-6 upstream services can be served in single-digit milliseconds from Redis instead of re-aggregating every time.
+  tags:
+  - KrakenD
+  - Integration
+  - Caching
+  - redis
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    KRAKEND_API_KEY: KRAKEND_API_KEY
+    REDIS_API_KEY: REDIS_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: krakend
+    baseUri: https://api.krakend.io
+    description: KrakenD API operations consumed by this integration.
+    resources:
+    - name: stats
+      path: /__stats/
+      operations:
+      - name: getstats
+        method: GET
+        description: Pull aggregation latency and cache-hit metrics to size Redis appropriately.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+    - name: health
+      path: /__health
+      operations:
+      - name: gethealth
+        method: GET
+        description: Confirm KrakenD is healthy before promoting cached responses to clients.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+  - type: http
+    namespace: redis
+    baseUri: https://redis-rest.internal.example.com
+    description: Redis REST API operations consumed by this integration.
+    resources:
+    - name: set-key
+      path: /set/{key}
+      operations:
+      - name: setkey
+        method: POST
+        description: 'Redis REST API: setKey'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: key
+          in: path
+          type: string
+          description: Path parameter key.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: get-key
+      path: /get/{key}
+      operations:
+      - name: getkey
+        method: GET
+        description: 'Redis REST API: getKey'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: key
+          in: path
+          type: string
+          description: Path parameter key.
+          required: true
+  exposes:
+  - type: mcp
+    namespace: krakend-redis-mcp
+    description: MCP adapter for the krakend-redis integration.
+    tools:
+    - name: krakend_redis
+      description: Execute the krakend redis integration end-to-end.
+      inputSchema:
+        type: object
+        properties:
+          trigger_event:
+            type: object
+            description: Triggering event payload.
+        required:
+        - trigger_event
+  - type: rest
+    namespace: krakend-redis-rest
+    port: 8080
+    description: REST adapter for the krakend-redis integration.
+    resources:
+    - path: /krakend-redis
+      name: krakend-redis
+      description: REST surface for the krakend-redis integration.
+      operations:
+      - method: POST
+        name: trigger
+        description: Trigger the krakend-redis integration.
+        call: krakend_redis
+        with:
+          trigger_event: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.

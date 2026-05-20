@@ -1,0 +1,119 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Federate Keycloak realms into KrakenD JWT validation
+  description: Point KrakenD's JWT validator at a Keycloak realm's OIDC discovery document so the gateway transparently accepts Keycloak-issued tokens — useful for self-hosted identity stacks that need an edge-enforced trust boundary in front of internal APIs.
+  tags:
+  - KrakenD
+  - Integration
+  - Identity
+  - keycloak
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    KRAKEND_API_KEY: KRAKEND_API_KEY
+    KEYCLOAK_API_KEY: KEYCLOAK_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: krakend
+    baseUri: https://api.krakend.io
+    description: KrakenD API operations consumed by this integration.
+    resources:
+    - name: health
+      path: /__health
+      operations:
+      - name: gethealth
+        method: GET
+        description: Verify KrakenD is healthy before federating realm trust.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+    - name: stats
+      path: /__stats/
+      operations:
+      - name: getstats
+        method: GET
+        description: Monitor token-validation latency added by Keycloak federation.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+  - type: http
+    namespace: keycloak
+    baseUri: https://keycloak.internal.example.com
+    description: Keycloak Admin REST API operations consumed by this integration.
+    resources:
+    - name: realms-realm-well-known-openid-configuration
+      path: /realms/{realm}/.well-known/openid-configuration
+      operations:
+      - name: getopenidconfig
+        method: GET
+        description: 'Keycloak Admin REST API: getOpenIdConfig'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: realm
+          in: path
+          type: string
+          description: Path parameter realm.
+          required: true
+    - name: admin-realms-realm-users
+      path: /admin/realms/{realm}/users
+      operations:
+      - name: listusers
+        method: GET
+        description: 'Keycloak Admin REST API: listUsers'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: realm
+          in: path
+          type: string
+          description: Path parameter realm.
+          required: true
+  exposes:
+  - type: mcp
+    namespace: krakend-keycloak-mcp
+    description: MCP adapter for the krakend-keycloak integration.
+    tools:
+    - name: krakend_keycloak
+      description: Execute the krakend keycloak integration end-to-end.
+      inputSchema:
+        type: object
+        properties:
+          trigger_event:
+            type: object
+            description: Triggering event payload.
+        required:
+        - trigger_event
+  - type: rest
+    namespace: krakend-keycloak-rest
+    port: 8080
+    description: REST adapter for the krakend-keycloak integration.
+    resources:
+    - path: /krakend-keycloak
+      name: krakend-keycloak
+      description: REST surface for the krakend-keycloak integration.
+      operations:
+      - method: POST
+        name: trigger
+        description: Trigger the krakend-keycloak integration.
+        call: krakend_keycloak
+        with:
+          trigger_event: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.

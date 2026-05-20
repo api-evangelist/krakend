@@ -1,0 +1,134 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Use AWS Lambda as a serverless KrakenD backend
+  description: Configure KrakenD to invoke AWS Lambda functions as backends (instead of HTTP services) so a single KrakenD endpoint can fan out to a mix of containerized services and serverless Lambda functions, with the gateway handling aggregation and response shaping.
+  tags:
+  - KrakenD
+  - Integration
+  - Backends
+  - aws-lambda
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    KRAKEND_API_KEY: KRAKEND_API_KEY
+    AWS_LAMBDA_API_KEY: AWS_LAMBDA_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: krakend
+    baseUri: https://api.krakend.io
+    description: KrakenD API operations consumed by this integration.
+    resources:
+    - name: stats
+      path: /__stats/
+      operations:
+      - name: getstats
+        method: GET
+        description: Track Lambda invocation latency and cold-start rates as KrakenD stats.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+    - name: debug-path
+      path: /__debug/{path}
+      operations:
+      - name: debugendpointpost
+        method: POST
+        description: Use the debug endpoint to inspect Lambda response payload shape during integration.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: path
+          in: path
+          type: string
+          description: Path parameter path.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+  - type: http
+    namespace: aws-lambda
+    baseUri: https://lambda.us-east-1.amazonaws.com
+    description: AWS Lambda API operations consumed by this integration.
+    resources:
+    - name: 2015-03-31-functions-functionname-invocations
+      path: /2015-03-31/functions/{FunctionName}/invocations
+      operations:
+      - name: invokefunction
+        method: POST
+        description: 'AWS Lambda API: invokeFunction'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: FunctionName
+          in: path
+          type: string
+          description: Path parameter FunctionName.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: 2015-03-31-functions-functionname
+      path: /2015-03-31/functions/{FunctionName}
+      operations:
+      - name: getfunction
+        method: GET
+        description: 'AWS Lambda API: getFunction'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: FunctionName
+          in: path
+          type: string
+          description: Path parameter FunctionName.
+          required: true
+  exposes:
+  - type: mcp
+    namespace: krakend-aws-lambda-mcp
+    description: MCP adapter for the krakend-aws-lambda integration.
+    tools:
+    - name: krakend_aws_lambda
+      description: Execute the krakend aws lambda integration end-to-end.
+      inputSchema:
+        type: object
+        properties:
+          trigger_event:
+            type: object
+            description: Triggering event payload.
+        required:
+        - trigger_event
+  - type: rest
+    namespace: krakend-aws-lambda-rest
+    port: 8080
+    description: REST adapter for the krakend-aws-lambda integration.
+    resources:
+    - path: /krakend-aws-lambda
+      name: krakend-aws-lambda
+      description: REST surface for the krakend-aws-lambda integration.
+      operations:
+      - method: POST
+        name: trigger
+        description: Trigger the krakend-aws-lambda integration.
+        call: krakend_aws_lambda
+        with:
+          trigger_event: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.

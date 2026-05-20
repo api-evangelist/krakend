@@ -1,0 +1,144 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Promote KrakenD config from GitHub on tagged release
+  description: When a tagged release is cut in the GitHub repo holding the KrakenD declarative config, validate the new krakend.json against the live gateway's /__debug endpoint, then trigger a rolling restart so the new config takes effect across all gateway instances.
+  tags:
+  - KrakenD
+  - Integration
+  - CI/CD
+  - github
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    KRAKEND_API_KEY: KRAKEND_API_KEY
+    GITHUB_API_KEY: GITHUB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: krakend
+    baseUri: https://api.krakend.io
+    description: KrakenD API operations consumed by this integration.
+    resources:
+    - name: debug-path
+      path: /__debug/{path}
+      operations:
+      - name: debugendpointpost
+        method: POST
+        description: Use KrakenD's debug endpoint to validate the new declarative config under load before promotion.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: path
+          in: path
+          type: string
+          description: Path parameter path.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: health
+      path: /__health
+      operations:
+      - name: gethealth
+        method: GET
+        description: Poll KrakenD health to confirm the new config has rolled out successfully.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+  - type: http
+    namespace: github
+    baseUri: https://api.github.com
+    description: GitHub REST API operations consumed by this integration.
+    resources:
+    - name: repos-owner-repo-releases-latest
+      path: /repos/{owner}/{repo}/releases/latest
+      operations:
+      - name: getlatestrelease
+        method: GET
+        description: 'GitHub REST API: getLatestRelease'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: owner
+          in: path
+          type: string
+          description: Path parameter owner.
+          required: true
+        - name: repo
+          in: path
+          type: string
+          description: Path parameter repo.
+          required: true
+    - name: repos-owner-repo-contents-path
+      path: /repos/{owner}/{repo}/contents/{path}
+      operations:
+      - name: getcontent
+        method: GET
+        description: 'GitHub REST API: getContent'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: owner
+          in: path
+          type: string
+          description: Path parameter owner.
+          required: true
+        - name: repo
+          in: path
+          type: string
+          description: Path parameter repo.
+          required: true
+        - name: path
+          in: path
+          type: string
+          description: Path parameter path.
+          required: true
+  exposes:
+  - type: mcp
+    namespace: krakend-github-mcp
+    description: MCP adapter for the krakend-github integration.
+    tools:
+    - name: krakend_github
+      description: Execute the krakend github integration end-to-end.
+      inputSchema:
+        type: object
+        properties:
+          trigger_event:
+            type: object
+            description: Triggering event payload.
+        required:
+        - trigger_event
+  - type: rest
+    namespace: krakend-github-rest
+    port: 8080
+    description: REST adapter for the krakend-github integration.
+    resources:
+    - path: /krakend-github
+      name: krakend-github
+      description: REST surface for the krakend-github integration.
+      operations:
+      - method: POST
+        name: trigger
+        description: Trigger the krakend-github integration.
+        call: krakend_github
+        with:
+          trigger_event: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.

@@ -1,0 +1,114 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Scrape KrakenD gateway metrics into Prometheus
+  description: Pull KrakenD's extended /__stats endpoint at a scrape interval and convert the JSON metrics into Prometheus exposition format so SRE teams can chart gateway latency, throughput, and error rates in their existing Prometheus + Grafana stack.
+  tags:
+  - KrakenD
+  - Integration
+  - Observability
+  - prometheus
+  created: '2026-05-20'
+  modified: '2026-05-20'
+binds:
+- namespace: env
+  keys:
+    KRAKEND_API_KEY: KRAKEND_API_KEY
+    PROMETHEUS_API_KEY: PROMETHEUS_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: krakend
+    baseUri: https://api.krakend.io
+    description: KrakenD API operations consumed by this integration.
+    resources:
+    - name: stats
+      path: /__stats/
+      operations:
+      - name: getstats
+        method: GET
+        description: Pull KrakenD's extended runtime metrics for conversion to Prometheus exposition format.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+    - name: health
+      path: /__health
+      operations:
+      - name: gethealth
+        method: GET
+        description: KrakenD gateway health check used to mark the metric series up/down.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+  - type: http
+    namespace: prometheus
+    baseUri: https://prometheus.internal.example.com
+    description: Prometheus Remote Write API operations consumed by this integration.
+    resources:
+    - name: api-v1-write
+      path: /api/v1/write
+      operations:
+      - name: remotewrite
+        method: POST
+        description: 'Prometheus Remote Write API: remoteWrite'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v1-query
+      path: /api/v1/query
+      operations:
+      - name: instantquery
+        method: GET
+        description: 'Prometheus Remote Write API: instantQuery'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters: []
+  exposes:
+  - type: mcp
+    namespace: krakend-prometheus-mcp
+    description: MCP adapter for the krakend-prometheus integration.
+    tools:
+    - name: krakend_prometheus
+      description: Execute the krakend prometheus integration end-to-end.
+      inputSchema:
+        type: object
+        properties:
+          trigger_event:
+            type: object
+            description: Triggering event payload.
+        required:
+        - trigger_event
+  - type: rest
+    namespace: krakend-prometheus-rest
+    port: 8080
+    description: REST adapter for the krakend-prometheus integration.
+    resources:
+    - path: /krakend-prometheus
+      name: krakend-prometheus
+      description: REST surface for the krakend-prometheus integration.
+      operations:
+      - method: POST
+        name: trigger
+        description: Trigger the krakend-prometheus integration.
+        call: krakend_prometheus
+        with:
+          trigger_event: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
