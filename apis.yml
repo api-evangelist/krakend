@@ -1,153 +1,151 @@
 aid: krakend
 name: KrakenD
-description: KrakenD is a stateless, distributed, high-performance open-source API gateway written in Go, focused on API aggregation,
-  transformation, and security with a declarative configuration approach.
+description: >-
+  KrakenD is a stateless, distributed, high-performance open-source API gateway written in Go, focused on API
+  aggregation, transformation, and security with a declarative configuration approach.
 type: Index
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 tags:
-- Aggregation
-- API Gateway
-- Go
-- Open Source
+  - Aggregation
+  - API Gateway
+  - Go
+  - Open Source
 url: https://raw.githubusercontent.com/api-evangelist/krakend/refs/heads/main/apis.yml
 created: '2026-03-18'
 modified: '2026-05-19'
 specificationVersion: '0.19'
 apis:
-- aid: krakend:krakend
-  name: KrakenD
-  description: KrakenD Community Edition is an ultra-high performance API gateway that aggregates multiple service calls into
-    a single endpoint, transforming and filtering responses with a declarative JSON configuration.
-  humanURL: https://www.krakend.io/
-  tags:
-  - Aggregation
-  - API Gateway
-  - Go
-  properties:
+  - aid: krakend:krakend
+    name: KrakenD
+    description: >-
+      KrakenD Community Edition is an ultra-high performance API gateway that aggregates multiple service calls into a
+      single endpoint, transforming and filtering responses with a declarative JSON configuration.
+    humanURL: https://www.krakend.io/
+    tags:
+      - Aggregation
+      - API Gateway
+      - Go
+    properties:
+      - type: Documentation
+        url: https://www.krakend.io/docs/overview/
+      - type: GettingStarted
+        url: https://www.krakend.io/docs/overview/introduction/
+      - type: Reference
+        url: https://www.krakend.io/docs/configuration/structure/
+      - type: ChangeLog
+        url: https://github.com/krakend/krakend-ce/releases
+      - type: GitHubRepository
+        url: https://github.com/krakend/krakend-ce
+      - type: JSONSchema
+        url: json-schema/service-config.json
+      - type: JSONLD
+        url: json-ld/krakend-context.jsonld
+  - aid: krakend:krakend-service-api
+    name: KrakenD Service API
+    description: >-
+      The KrakenD Service API exposes built-in operational endpoints on a running KrakenD gateway instance. It includes
+      the health check endpoint at /__health (enabled by default), the debug endpoint at /__debug (enabled via
+      configuration), and the extended metrics endpoint at /__stats for detailed runtime telemetry. These endpoints are
+      used for monitoring, debugging, and health checking KrakenD deployments.
+    humanURL: https://www.krakend.io/docs/service-settings/health/
+    baseURL: http://localhost:8080
+    tags:
+      - Health Check
+      - Monitoring
+      - Observability
+      - Operations
+    properties:
+      - type: Documentation
+        url: https://www.krakend.io/docs/service-settings/health/
+      - type: Reference
+        url: https://www.krakend.io/docs/service-settings/debug-endpoint/
+      - type: OpenAPI
+        url: openapi/krakend-service-api-openapi.yml
+  - aid: krakend:krakend-async-agent
+    name: KrakenD Async Agent
+    description: >-
+      The KrakenD Async Agent enables event-driven API consumption by connecting KrakenD to message brokers and event
+      queues such as AMQP, Kafka, and NATS. It allows KrakenD to consume messages from topics and queues and forward
+      them to backend services without requiring an inbound HTTP request from a client.
+    humanURL: https://www.krakend.io/docs/async/
+    tags:
+      - Async
+      - Event-Driven
+      - Kafka
+      - Messaging
+    properties:
+      - type: Documentation
+        url: https://www.krakend.io/docs/async/
+      - type: Reference
+        url: https://www.krakend.io/docs/async/amqp/
+      - type: JSONSchema
+        url: json-schema/async-agent.json
+      - type: GitHubRepository
+        url: https://github.com/krakend/krakend-ce
+common:
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/krakend
+  - type: Website
+    url: https://www.krakend.io/
   - type: Documentation
-    url: https://www.krakend.io/docs/overview/
+    url: https://www.krakend.io/docs/
   - type: GettingStarted
     url: https://www.krakend.io/docs/overview/introduction/
-  - type: Reference
-    url: https://www.krakend.io/docs/configuration/structure/
+  - type: Blog
+    url: https://www.krakend.io/blog/
   - type: ChangeLog
     url: https://github.com/krakend/krakend-ce/releases
+  - type: GitHubOrganization
+    url: https://github.com/krakend
   - type: GitHubRepository
     url: https://github.com/krakend/krakend-ce
+  - type: Community
+    url: https://community.krakend.io/
+  - type: StackOverflow
+    url: https://stackoverflow.com/questions/tagged/krakend
+  - type: Issue Tracker
+    url: https://github.com/krakend/krakend-ce/issues
+  - type: Developer Tools
+    url: https://designer.krakend.io/
   - type: JSONSchema
     url: json-schema/service-config.json
   - type: JSONLD
     url: json-ld/krakend-context.jsonld
-- aid: krakend:krakend-service-api
-  name: KrakenD Service API
-  description: The KrakenD Service API exposes built-in operational endpoints on a running KrakenD gateway instance. It includes
-    the health check endpoint at /__health (enabled by default), the debug endpoint at /__debug (enabled via configuration),
-    and the extended metrics endpoint at /__stats for detailed runtime telemetry. These endpoints are used for monitoring,
-    debugging, and health checking KrakenD deployments.
-  humanURL: https://www.krakend.io/docs/service-settings/health/
-  baseURL: http://localhost:8080
-  tags:
-  - Health Check
-  - Monitoring
-  - Observability
-  - Operations
-  properties:
-  - type: Documentation
-    url: https://www.krakend.io/docs/service-settings/health/
-  - type: Reference
-    url: https://www.krakend.io/docs/service-settings/debug-endpoint/
-  - type: OpenAPI
-    url: openapi/krakend-service-api-openapi.yml
-  - type: NaftikoCapability
-    url: capabilities/service-debug.yaml
-  - type: NaftikoCapability
-    url: capabilities/service-health.yaml
-  - type: NaftikoCapability
-    url: capabilities/service-metrics.yaml
-- aid: krakend:krakend-async-agent
-  name: KrakenD Async Agent
-  description: The KrakenD Async Agent enables event-driven API consumption by connecting KrakenD to message brokers and event
-    queues such as AMQP, Kafka, and NATS. It allows KrakenD to consume messages from topics and queues and forward them to
-    backend services without requiring an inbound HTTP request from a client.
-  humanURL: https://www.krakend.io/docs/async/
-  tags:
-  - Async
-  - Event-Driven
-  - Kafka
-  - Messaging
-  properties:
-  - type: Documentation
-    url: https://www.krakend.io/docs/async/
-  - type: Reference
-    url: https://www.krakend.io/docs/async/amqp/
-  - type: JSONSchema
-    url: json-schema/async-agent.json
-  - type: GitHubRepository
-    url: https://github.com/krakend/krakend-ce
-common:
-- type: LinkedIn
-  url: https://www.linkedin.com/company/krakend
-- type: Website
-  url: https://www.krakend.io/
-- type: Documentation
-  url: https://www.krakend.io/docs/
-- type: GettingStarted
-  url: https://www.krakend.io/docs/overview/introduction/
-- type: Blog
-  url: https://www.krakend.io/blog/
-- type: ChangeLog
-  url: https://github.com/krakend/krakend-ce/releases
-- type: GitHubOrganization
-  url: https://github.com/krakend
-- type: GitHubRepository
-  url: https://github.com/krakend/krakend-ce
-- type: Community
-  url: https://community.krakend.io/
-- type: StackOverflow
-  url: https://stackoverflow.com/questions/tagged/krakend
-- type: Issue Tracker
-  url: https://github.com/krakend/krakend-ce/issues
-- type: Developer Tools
-  url: https://designer.krakend.io/
-- type: JSONSchema
-  url: json-schema/service-config.json
-- type: JSONLD
-  url: json-ld/krakend-context.jsonld
-- type: Integrations
-  url: https://www.krakend.io/partners/
-- name: MCP Server
-  url: https://github.com/krakend/mcp-server
-  type: MCPServer
+  - type: Integrations
+    url: https://www.krakend.io/partners/
+  - name: MCP Server
+    url: https://github.com/krakend/mcp-server
+    type: MCPServer
 integrations:
-- name: KrakenD API Gateway
-- name: Single.Earth image
-- name: Software Architect, Single.Earth
-- name: lastminute.com image
-- name: Enterprise Architecture, lastminute.com
-- name: Coop Atlantique image
-- name: Senior Engineer, Coop Atlantique
-- name: Background Pattern
-- name: logo partner Torry Harris
-- name: logo partner Massil Technologies
-- name: logo partner Convert Digital
-- name: logo partner CloudAPPi
-- name: logo partner Target Solutions
-- name: logo partner Beat
-- name: logo partner Nusaprima
-- name: logo partner SETSIBI
-- name: logo partner Carahsoft
-- name: logo partner Litis
-- name: logo partner OSC Korea
-- name: logo partner Skalena
-- name: logo partner Ardanlabs
-- name: logo partner Cogitosoft
-- name: Background
-- name: logo partner Microsoft
-- name: logo partner Amazon Web Services
-- name: logo partner Auth0
-- name: logo partner Moesif
-- name: icon
-- name: SOC Certification
+  - name: KrakenD API Gateway
+  - name: Single.Earth image
+  - name: Software Architect, Single.Earth
+  - name: lastminute.com image
+  - name: Enterprise Architecture, lastminute.com
+  - name: Coop Atlantique image
+  - name: Senior Engineer, Coop Atlantique
+  - name: Background Pattern
+  - name: logo partner Torry Harris
+  - name: logo partner Massil Technologies
+  - name: logo partner Convert Digital
+  - name: logo partner CloudAPPi
+  - name: logo partner Target Solutions
+  - name: logo partner Beat
+  - name: logo partner Nusaprima
+  - name: logo partner SETSIBI
+  - name: logo partner Carahsoft
+  - name: logo partner Litis
+  - name: logo partner OSC Korea
+  - name: logo partner Skalena
+  - name: logo partner Ardanlabs
+  - name: logo partner Cogitosoft
+  - name: Background
+  - name: logo partner Microsoft
+  - name: logo partner Amazon Web Services
+  - name: logo partner Auth0
+  - name: logo partner Moesif
+  - name: icon
+  - name: SOC Certification
 maintainers:
-- FN: Kin Lane
-  email: kin@apievangelist.com
+  - FN: Kin Lane
+    email: kin@apievangelist.com

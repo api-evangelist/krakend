@@ -1,0 +1,494 @@
+{
+  "item": [
+    {
+      "id": "a01419c3-b4e0-4333-928e-1a4c648cb083",
+      "name": "Debug",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "e0780bfe-8503-446d-8d9a-6a7479b6176d",
+          "name": "KrakenD Debug endpoint",
+          "request": {
+            "name": "KrakenD Debug endpoint",
+            "description": {
+              "content": "Acts as a fake backend that echoes request details in the server logs at DEBUG level. Useful for inspecting the interaction between the gateway and backends. Must be enabled with the -d flag or debug_endpoint configuration option.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "__debug",
+                ":path"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "path",
+                  "description": "(Required) Any sub-path for debugging purposes."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "1de18e1d-a585-493d-bdb0-6a0d5e596fc3",
+              "name": "Debug response echoing the request details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "__debug",
+                    ":path"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "path",
+                      "description": "(Required) Any sub-path for debugging purposes."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6f09886e-590a-44a7-9c14-0fd88935347a",
+          "name": "KrakenD Debug endpoint (POST)",
+          "request": {
+            "name": "KrakenD Debug endpoint (POST)",
+            "description": {
+              "content": "POST variant of the debug endpoint. Echoes request body and headers in the server logs.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "__debug",
+                ":path"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "path",
+                  "description": "(Required) Any sub-path for debugging purposes."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "63f8245e-9521-4a3b-93c4-c36de6e03591",
+              "name": "Debug response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "__debug",
+                    ":path"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "path",
+                      "description": "(Required) Any sub-path for debugging purposes."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<object>",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "78656fa8-4094-43ac-ac27-b417e2433146",
+          "name": "KrakenD Echo endpoint",
+          "request": {
+            "name": "KrakenD Echo endpoint",
+            "description": {
+              "content": "Returns details about the incoming request, including headers and query parameters. Useful for testing and debugging. Must be enabled in the configuration.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "__echo",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5979bc36-ba2c-4e95-8ea5-ead63c7c1a32",
+              "name": "Echo response with request details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "__echo",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"headers\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ]\n  },\n  \"query_string\": {\n    \"key_0\": [\n      \"string\",\n      \"string\"\n    ],\n    \"key_1\": [\n      \"string\",\n      \"string\"\n    ]\n  },\n  \"method\": \"string\",\n  \"path\": \"string\",\n  \"body\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "f36e9429-a297-42b9-a4c0-c88b1e91f2ae",
+      "name": "Health",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "abdfd23d-f091-4b9a-b979-f1675fd95fa1",
+          "name": "KrakenD Health check",
+          "request": {
+            "name": "KrakenD Health check",
+            "description": {
+              "content": "Returns the health status of the KrakenD instance. Automatically available when KrakenD is running. Returns a 200 status code when the gateway is healthy.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "__health"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "26269b52-7785-4402-a4d1-73f3d01a6dca",
+              "name": "Gateway is healthy and running.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "__health"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"agents\": {},\n  \"now\": \"string\",\n  \"status\": \"ok\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dd92cdda-06f2-4a04-8e03-8202bbdd8b5a",
+              "name": "Gateway is unhealthy or not ready.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "__health"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "9b3af574-afa9-444a-adc5-770cced64925",
+      "name": "Metrics",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "da7d023a-a988-4e36-9a68-97f282886195",
+          "name": "KrakenD Extended metrics",
+          "request": {
+            "name": "KrakenD Extended metrics",
+            "description": {
+              "content": "Returns extended runtime metrics for the KrakenD instance including router, proxy, and backend statistics. This endpoint runs on a separate port (default 8090) and requires the telemetry/metrics extra_config to be enabled. Metrics are refreshed based on the configured collection_time interval.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "__stats",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "735c0a4b-de34-42af-ac95-b8baa755e94f",
+              "name": "Successful response with runtime metrics.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "__stats",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"cmdline\": [\n    \"string\",\n    \"string\"\n  ],\n  \"memstats\": {},\n  \"router\": {},\n  \"proxy\": {},\n  \"backend\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:8080",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "496988b7-74bf-4c30-88a1-c3b8ba26e73e",
+    "name": "KrakenD Service API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The KrakenD Service API exposes built-in operational endpoints for health checking, debugging, and metrics collection on a running KrakenD API Gateway instance. The health endpoint (/__health) is enabled by default and returns the gateway status. The debug endpoint (/__debug) is available when the server is started with the -d flag or debug_endpoint is set to true. The extended metrics endpoint (/__stats) runs on a separate port and provides detailed runtime metrics when the telemetry/metrics extra_config is enabled.\n\nContact Support:\n Name: KrakenD",
+      "type": "text/plain"
+    }
+  }
+}
