@@ -83,6 +83,8 @@ apis:
       - type: GitHubRepository
         url: https://github.com/krakend/krakend-ce
 common:
+  - type: DomainSecurity
+    url: security/krakend-domain-security.yml
   - type: LinkedIn
     url: https://www.linkedin.com/company/krakend
   - type: Website
