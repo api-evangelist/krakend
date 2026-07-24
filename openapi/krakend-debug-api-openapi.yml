@@ -1,0 +1,107 @@
+openapi: 3.1.0
+info:
+  title: KrakenD Service Debug API
+  description: The KrakenD Service API exposes built-in operational endpoints for health checking, debugging, and metrics collection on a running KrakenD API Gateway instance. The health endpoint (/__health) is enabled by default and returns the gateway status. The debug endpoint (/__debug) is available when the server is started with the -d flag or debug_endpoint is set to true. The extended metrics endpoint (/__stats) runs on a separate port and provides detailed runtime metrics when the telemetry/metrics extra_config is enabled.
+  version: 2.9.0
+  contact:
+    name: KrakenD
+    url: https://www.krakend.io
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: http://localhost:8080
+  description: Default KrakenD gateway port
+- url: http://localhost:8090
+  description: Default KrakenD metrics port
+tags:
+- name: Debug
+paths:
+  /__debug/{path}:
+    get:
+      operationId: debugEndpoint
+      summary: KrakenD Debug endpoint
+      description: Acts as a fake backend that echoes request details in the server logs at DEBUG level. Useful for inspecting the interaction between the gateway and backends. Must be enabled with the -d flag or debug_endpoint configuration option.
+      tags:
+      - Debug
+      parameters:
+      - name: path
+        in: path
+        required: true
+        description: Any sub-path for debugging purposes.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Debug response echoing the request details.
+          content:
+            application/json:
+              schema:
+                type: object
+    post:
+      operationId: debugEndpointPost
+      summary: KrakenD Debug endpoint (POST)
+      description: POST variant of the debug endpoint. Echoes request body and headers in the server logs.
+      tags:
+      - Debug
+      parameters:
+      - name: path
+        in: path
+        required: true
+        description: Any sub-path for debugging purposes.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Debug response.
+          content:
+            application/json:
+              schema:
+                type: object
+  /__echo/:
+    get:
+      operationId: echoEndpoint
+      summary: KrakenD Echo endpoint
+      description: Returns details about the incoming request, including headers and query parameters. Useful for testing and debugging. Must be enabled in the configuration.
+      tags:
+      - Debug
+      responses:
+        '200':
+          description: Echo response with request details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EchoResponse'
+components:
+  schemas:
+    EchoResponse:
+      type: object
+      properties:
+        headers:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Request headers received.
+        query_string:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          description: Query parameters received.
+        method:
+          type: string
+          description: HTTP method of the request.
+        path:
+          type: string
+          description: Request path.
+        body:
+          type: string
+          description: Request body if present.

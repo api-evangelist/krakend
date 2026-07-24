@@ -1,0 +1,50 @@
+openapi: 3.1.0
+info:
+  title: KrakenD Service Debug Health API
+  description: The KrakenD Service API exposes built-in operational endpoints for health checking, debugging, and metrics collection on a running KrakenD API Gateway instance. The health endpoint (/__health) is enabled by default and returns the gateway status. The debug endpoint (/__debug) is available when the server is started with the -d flag or debug_endpoint is set to true. The extended metrics endpoint (/__stats) runs on a separate port and provides detailed runtime metrics when the telemetry/metrics extra_config is enabled.
+  version: 2.9.0
+  contact:
+    name: KrakenD
+    url: https://www.krakend.io
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: http://localhost:8080
+  description: Default KrakenD gateway port
+- url: http://localhost:8090
+  description: Default KrakenD metrics port
+tags:
+- name: Health
+paths:
+  /__health:
+    get:
+      operationId: getHealth
+      summary: KrakenD Health check
+      description: Returns the health status of the KrakenD instance. Automatically available when KrakenD is running. Returns a 200 status code when the gateway is healthy.
+      tags:
+      - Health
+      responses:
+        '200':
+          description: Gateway is healthy and running.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '503':
+          description: Gateway is unhealthy or not ready.
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      properties:
+        agents:
+          type: object
+          description: Status of registered agents.
+        now:
+          type: string
+          description: Current server timestamp.
+        status:
+          type: string
+          description: Overall health status.
+          example: ok

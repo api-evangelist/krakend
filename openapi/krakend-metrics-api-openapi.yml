@@ -1,0 +1,55 @@
+openapi: 3.1.0
+info:
+  title: KrakenD Service Debug Metrics API
+  description: The KrakenD Service API exposes built-in operational endpoints for health checking, debugging, and metrics collection on a running KrakenD API Gateway instance. The health endpoint (/__health) is enabled by default and returns the gateway status. The debug endpoint (/__debug) is available when the server is started with the -d flag or debug_endpoint is set to true. The extended metrics endpoint (/__stats) runs on a separate port and provides detailed runtime metrics when the telemetry/metrics extra_config is enabled.
+  version: 2.9.0
+  contact:
+    name: KrakenD
+    url: https://www.krakend.io
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: http://localhost:8080
+  description: Default KrakenD gateway port
+- url: http://localhost:8090
+  description: Default KrakenD metrics port
+tags:
+- name: Metrics
+paths:
+  /__stats/:
+    get:
+      operationId: getStats
+      summary: KrakenD Extended metrics
+      description: Returns extended runtime metrics for the KrakenD instance including router, proxy, and backend statistics. This endpoint runs on a separate port (default 8090) and requires the telemetry/metrics extra_config to be enabled. Metrics are refreshed based on the configured collection_time interval.
+      tags:
+      - Metrics
+      responses:
+        '200':
+          description: Successful response with runtime metrics.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatsResponse'
+components:
+  schemas:
+    StatsResponse:
+      type: object
+      properties:
+        cmdline:
+          type: array
+          items:
+            type: string
+          description: Command line arguments used to start the process.
+        memstats:
+          type: object
+          description: Go runtime memory statistics.
+        router:
+          type: object
+          description: Router-level metrics including request counts and latencies.
+        proxy:
+          type: object
+          description: Proxy-level metrics for endpoint aggregation.
+        backend:
+          type: object
+          description: Backend-level metrics per backend target.
