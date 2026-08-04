@@ -1,0 +1,18 @@
+{
+  "provider": "krakend",
+  "sources": [
+    "krakend-debug-api-openapi.yml",
+    "krakend-health-api-openapi.yml",
+    "krakend-metrics-api-openapi.yml"
+  ],
+  "outputs": [
+    "krakend-debug-api-openapi.yml",
+    "krakend-health-api-openapi.yml",
+    "krakend-metrics-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
