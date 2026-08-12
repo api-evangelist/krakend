@@ -4,6 +4,19 @@ description: >-
   KrakenD is a stateless, distributed, high-performance open-source API gateway written in Go, focused on API
   aggregation, transformation, and security with a declarative configuration approach.
 type: Index
+deliveryModel:
+  model: self-hosted
+  license: Apache-2.0
+  open_source: true
+  commercial: false
+  callable_host: false
+  label: Self-hosted open source · you run it yourself
+  confidence: high
+  source:
+  - license
+  - openapi
+  generated: '2026-08-11'
+  method: derived
 accessModel:
   pricing: freemium
   onboarding: unknown
@@ -116,6 +129,15 @@ apis:
   - type: Reference
     url: https://www.krakend.io/docs/service-settings/debug-endpoint/
 common:
+  - type: SecurityPolicy
+    url: https://github.com/krakend/krakend-ce/blob/master/SECURITY.md
+  - type: CodeOfConduct
+    url: https://github.com/krakend/.github/blob/main/CODE_OF_CONDUCT.md
+  - type: ContributionGuide
+    url: https://github.com/krakend/.github/blob/main/CONTRIBUTING.md
+  - type: License
+    name: Apache-2.0
+    url: https://github.com/krakend/krakend-ce/blob/master/LICENSE
   - type: AgenticAccess
     url: agentic-access/krakend-agentic-access.yml
   - type: DomainSecurity
