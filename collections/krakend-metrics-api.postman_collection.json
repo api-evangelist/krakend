@@ -1,0 +1,104 @@
+{
+  "item": [
+    {
+      "id": "84d6cda2-edc7-42a3-af79-2e94e41890a3",
+      "name": "Metrics",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "868ad4f5-99d8-4bff-81c8-b500b99baa43",
+          "name": "KrakenD Extended metrics",
+          "request": {
+            "name": "KrakenD Extended metrics",
+            "description": {
+              "content": "Returns extended runtime metrics for the KrakenD instance including router, proxy, and backend statistics. This endpoint runs on a separate port (default 8090) and requires the telemetry/metrics extra_config to be enabled. Metrics are refreshed based on the configured collection_time interval.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "__stats",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e570fa7d-154d-45f1-8d8c-efa0440f8640",
+              "name": "Successful response with runtime metrics.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "__stats",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"cmdline\": [\n    \"string\",\n    \"string\"\n  ],\n  \"memstats\": {},\n  \"router\": {},\n  \"proxy\": {},\n  \"backend\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:8080",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "dd208458-efe9-4bea-acd5-84de9c28456e",
+    "name": "KrakenD Service Debug Metrics API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The KrakenD Service API exposes built-in operational endpoints for health checking, debugging, and metrics collection on a running KrakenD API Gateway instance. The health endpoint (/__health) is enabled by default and returns the gateway status. The debug endpoint (/__debug) is available when the server is started with the -d flag or debug_endpoint is set to true. The extended metrics endpoint (/__stats) runs on a separate port and provides detailed runtime metrics when the telemetry/metrics extra_config is enabled.\n\nContact Support:\n Name: KrakenD",
+      "type": "text/plain"
+    }
+  }
+}

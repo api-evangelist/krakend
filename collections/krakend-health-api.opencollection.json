@@ -1,0 +1,29 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "KrakenD Service Debug Health API",
+    "version": "2.9.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Health",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "KrakenD Health check",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8080/__health"
+          },
+          "docs": "Returns the health status of the KrakenD instance. Automatically available when KrakenD is running. Returns a 200 status code when the gateway is healthy."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

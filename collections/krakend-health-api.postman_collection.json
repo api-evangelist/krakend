@@ -1,0 +1,131 @@
+{
+  "item": [
+    {
+      "id": "b5784ac4-7093-46cd-a30a-fc29cfa379a0",
+      "name": "Health",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "39aad49d-c476-45bf-a751-95b2822a009d",
+          "name": "KrakenD Health check",
+          "request": {
+            "name": "KrakenD Health check",
+            "description": {
+              "content": "Returns the health status of the KrakenD instance. Automatically available when KrakenD is running. Returns a 200 status code when the gateway is healthy.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "__health"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "81b01f99-799b-47d4-b225-60a34218fc0c",
+              "name": "Gateway is healthy and running.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "__health"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"agents\": {},\n  \"now\": \"string\",\n  \"status\": \"ok\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "160827b0-dd2c-4cb5-9529-226a621399ac",
+              "name": "Gateway is unhealthy or not ready.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "__health"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:8080",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "d70bb32c-d9cb-4531-9103-7a655cbaa5b7",
+    "name": "KrakenD Service Debug Health API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The KrakenD Service API exposes built-in operational endpoints for health checking, debugging, and metrics collection on a running KrakenD API Gateway instance. The health endpoint (/__health) is enabled by default and returns the gateway status. The debug endpoint (/__debug) is available when the server is started with the -d flag or debug_endpoint is set to true. The extended metrics endpoint (/__stats) runs on a separate port and provides detailed runtime metrics when the telemetry/metrics extra_config is enabled.\n\nContact Support:\n Name: KrakenD",
+      "type": "text/plain"
+    }
+  }
+}

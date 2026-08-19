@@ -1,0 +1,71 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "KrakenD Service Debug API",
+    "version": "2.9.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Debug",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "KrakenD Debug endpoint",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8080/__debug/:path",
+            "params": [
+              {
+                "name": "path",
+                "value": "",
+                "type": "path",
+                "description": "Any sub-path for debugging purposes."
+              }
+            ]
+          },
+          "docs": "Acts as a fake backend that echoes request details in the server logs at DEBUG level. Useful for inspecting the interaction between the gateway and backends. Must be enabled with the -d flag or debug_endpoint configuration option."
+        },
+        {
+          "info": {
+            "name": "KrakenD Debug endpoint (POST)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "http://localhost:8080/__debug/:path",
+            "params": [
+              {
+                "name": "path",
+                "value": "",
+                "type": "path",
+                "description": "Any sub-path for debugging purposes."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "POST variant of the debug endpoint. Echoes request body and headers in the server logs."
+        },
+        {
+          "info": {
+            "name": "KrakenD Echo endpoint",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:8080/__echo/"
+          },
+          "docs": "Returns details about the incoming request, including headers and query parameters. Useful for testing and debugging. Must be enabled in the configuration."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
