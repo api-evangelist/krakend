@@ -1,9 +1,7 @@
 {
   "provider": "krakend",
   "sources": [
-    "krakend-debug-api-openapi.yml",
-    "krakend-health-api-openapi.yml",
-    "krakend-metrics-api-openapi.yml"
+    "_original/krakend-service-api-openapi.yml"
   ],
   "outputs": [
     "krakend-debug-api-openapi.yml",
@@ -13,6 +11,14 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "krakend-service-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "krakend-debug-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "krakend-health-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "krakend-metrics-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
