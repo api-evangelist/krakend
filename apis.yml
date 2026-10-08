@@ -135,6 +135,12 @@ apis:
   - type: Reference
     url: https://www.krakend.io/docs/service-settings/debug-endpoint/
 common:
+  - type: Plans
+    url: plans/krakend-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/krakend-rate-limits.yml
+  - type: FinOps
+    url: finops/krakend-finops.yml
   - type: SecurityPolicy
     url: https://github.com/krakend/krakend-ce/blob/master/SECURITY.md
   - type: CodeOfConduct
