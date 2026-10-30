@@ -1,4 +1,4 @@
-# KrakenD (krakend)
+# KrakenD
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -66,114 +66,152 @@
 
 KrakenD is a stateless, distributed, high-performance open-source API gateway written in Go, focused on API aggregation, transformation, and security with a declarative configuration approach.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/krakend/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/krakend/refs/heads/main/apis.yml)
+**Areas:** Aggregation · API Gateway · Go · Open Source
 
-## Scope
+## KrakenD on APIs.io
 
-- **Type:** Index
+Everything profiled for KrakenD is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/krakend/](https://apis.io/providers/krakend/)** — or go straight to one of the APIs or properties below.
 
-## Tags
+### APIs (5)
 
-- Aggregation
-- API Gateway
-- Go
-- Open Source
+- [KrakenD](https://apis.io/apis/krakend/krakend/) — KrakenD Community Edition is an ultra-high performance API gateway that aggregates multiple service calls into a single endpoint, transforming and filtering…
+- [KrakenD Async Agent](https://apis.io/apis/krakend/krakend-async-agent/) — The KrakenD Async Agent enables event-driven API consumption by connecting KrakenD to message brokers and event queues such as AMQP, Kafka, and NATS. It…
+- [KrakenD Debug API](https://apis.io/apis/krakend/krakend-debug-api/) — The Debug API from KrakenD — 2 operation(s) for debug.
+- [KrakenD Health API](https://apis.io/apis/krakend/krakend-health-api/) — The Health API from KrakenD — 1 operation(s) for health.
+- [KrakenD Metrics API](https://apis.io/apis/krakend/krakend-metrics-api/) — The Metrics API from KrakenD — 1 operation(s) for metrics.
 
-## Timestamps
+### Published properties
 
-- **Created:** 2026-03-18
-- **Modified:** 2026-05-19
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## APIs
+#### MCP servers (1)
 
-### KrakenD
+Model Context Protocol servers that expose the API to agents.
 
-KrakenD Community Edition is an ultra-high performance API gateway that aggregates multiple service calls into a single endpoint, transforming and filtering responses with a declarative JSON configuration.
+- [MCP Server](https://apis.io/servers/krakend/mcp-server/)
 
-- **Human URL:** [https://www.krakend.io/](https://www.krakend.io/)
+#### Agentic access (1)
 
-#### Tags
+Which operations an agent can call, which act, and which need a human in the loop.
 
-- Aggregation
-- API Gateway
-- Go
+- [Krakend Agentic Access](https://apis.io/agentic-access/krakend/krakend-agentic-access/)
 
-#### Properties
+#### JSON Schema (6)
 
-- [Documentation](https://www.krakend.io/docs/overview/)
-- [Getting Started](https://www.krakend.io/docs/overview/introduction/)
-- [Reference](https://www.krakend.io/docs/configuration/structure/)
-- [Changelog](https://github.com/krakend/krakend-ce/releases)
-- [GitHub Repository](https://github.com/krakend/krakend-ce)
-- [JSON Schema](json-schema/service-config.json) — [JSON Schema](https://json-schema.org/specification)
-- [JSON-LD](json-ld/krakend-context.jsonld) — [JSON-LD](https://www.w3.org/TR/json-ld11/)
-- [Postman Collection](collections/krakend-service-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/krakend-service-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+The data models the API reads and writes.
 
-### KrakenD Service API
+- [KrakenD Async Agent](https://apis.io/schemas/krakend/async-agent/)
+- [KrakenD Backend](https://apis.io/schemas/krakend/backend/)
+- [KrakenD Endpoint](https://apis.io/schemas/krakend/endpoint/)
+- [KrakenD Plugin Configuration](https://apis.io/schemas/krakend/plugin/)
+- [KrakenD Service Configuration](https://apis.io/schemas/krakend/service-config/)
+- [KrakenD TLS Configuration](https://apis.io/schemas/krakend/tls/)
 
-The KrakenD Service API exposes built-in operational endpoints on a running KrakenD gateway instance. It includes the health check endpoint at /__health (enabled by default), the debug endpoint at /__debug (enabled via configuration), and the extended metrics endpoint at /__stats for detailed runtime telemetry. These endpoints are used for monitoring, debugging, and health checking KrakenD deployments.
+#### JSON-LD (1)
 
-- **Human URL:** [https://www.krakend.io/docs/service-settings/health/](https://www.krakend.io/docs/service-settings/health/)
-- **Base URL:** `http://localhost:8080`
+Linked-data contexts for the provider's vocabulary.
 
-#### Tags
+- [Krakend Context](https://apis.io/jsonld/krakend/krakend-context/)
 
-- Health Check
-- Monitoring
-- Observability
-- Operations
+#### Collections (4)
 
-#### Properties
+Postman and Open Collection request collections.
 
-- [Documentation](https://www.krakend.io/docs/service-settings/health/)
-- [Reference](https://www.krakend.io/docs/service-settings/debug-endpoint/)
-- [OpenAPI](openapi/krakend-service-api-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/krakend-service-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/krakend-service-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [KrakenD Service Debug API](https://apis.io/collections/krakend/open-krakend-debug-api/)
+- [KrakenD Service Debug Health API](https://apis.io/collections/krakend/open-krakend-health-api/)
+- [KrakenD Service Debug Metrics API](https://apis.io/collections/krakend/open-krakend-metrics-api/)
+- [KrakenD Service API](https://apis.io/collections/krakend/open-krakend-service-api/)
 
-### KrakenD Async Agent
+#### Governance rules (1)
 
-The KrakenD Async Agent enables event-driven API consumption by connecting KrakenD to message brokers and event queues such as AMQP, Kafka, and NATS. It allows KrakenD to consume messages from topics and queues and forward them to backend services without requiring an inbound HTTP request from a client.
+Spectral rulesets for the provider's contracts.
 
-- **Human URL:** [https://www.krakend.io/docs/async/](https://www.krakend.io/docs/async/)
+- [KrakenD — jsonschema rules](https://apis.io/rules/krakend/krakend-jsonschema-spectral-rules/)
 
-#### Tags
+#### Security (1)
 
-- Async
-- Event-Driven
-- Kafka
-- Messaging
+Authentication, trust centre, and vulnerability disclosure.
 
-#### Properties
+- [Krakend Domain Security](https://apis.io/security/krakend/krakend-domain-security/)
 
-- [Documentation](https://www.krakend.io/docs/async/)
-- [Reference](https://www.krakend.io/docs/async/amqp/)
-- [JSON Schema](json-schema/async-agent.json) — [JSON Schema](https://json-schema.org/specification)
-- [GitHub Repository](https://github.com/krakend/krakend-ce)
-- [Postman Collection](collections/krakend-service-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/krakend-service-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+#### Plans and pricing (1)
 
-## Common Properties
+Published plans, tiers and prices.
 
-- [LinkedIn](https://www.linkedin.com/company/krakend)
+- [Krakend Plans Pricing](https://apis.io/plans/krakend/krakend-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Krakend Rate Limits](https://apis.io/rate-limits/krakend/krakend-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [Krakend Finops](https://apis.io/finops/krakend/krakend-finops/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
 - [Website](https://www.krakend.io/)
 - [Documentation](https://www.krakend.io/docs/)
-- [Getting Started](https://www.krakend.io/docs/overview/introduction/)
-- [Blog](https://www.krakend.io/blog/)
+- [Getting started](https://www.krakend.io/docs/overview/introduction/)
 - [Changelog](https://github.com/krakend/krakend-ce/releases)
-- [GitHub Organization](https://github.com/krakend)
-- [GitHub Repository](https://github.com/krakend/krakend-ce)
-- [Community](https://community.krakend.io/)
-- [Stack Overflow](https://stackoverflow.com/questions/tagged/krakend)
-- [Issue  Tracker](https://github.com/krakend/krakend-ce/issues)
-- [Developer  Tools](https://designer.krakend.io/)
-- [JSON Schema](json-schema/service-config.json) — [JSON Schema](https://json-schema.org/specification)
-- [JSON-LD](json-ld/krakend-context.jsonld) — [JSON-LD](https://www.w3.org/TR/json-ld11/)
-- [Integrations](https://www.krakend.io/partners/)
-- [M C P Server](https://github.com/krakend/mcp-server)
+- [Blog](https://www.krakend.io/blog/)
+- [GitHub](https://github.com/krakend)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 35.7** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 46.7 |
+| Contract quality | 46.9 |
+| Contract governance | 9.8 |
+| Operational transparency | 36.8 |
+| Developer ergonomics | 33.3 |
+| Access clarity | 5.3 |
+
+**Agent readiness 18.5** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | documented (partial credit) |
+| Auth Clarity | — |
+| Idempotency | — |
+| Error Semantics | — |
+| OpenAPI Examples | — |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 10.8** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/krakend/](https://apis.io/providers/krakend/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for KrakenD: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/krakend/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
